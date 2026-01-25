@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Number Guessing Game - Intro CS</title>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="styles/guessing-game.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <h1>Number Guessing Game</h1>
+
+    <div class="game-container">
+      <p class="instructions">
+        I'm thinking of a number between 1 and 100. Can you guess it?
+      </p>
+
+      <div class="input-section">
+        <label for="guess-input">Enter your guess:</label>
+        <input type="number" id="guess-input" min="1" max="100" placeholder="1-100">
+        <button id="guess-btn">Guess!</button>
+      </div>
+
+      <div class="feedback-section">
+        <p id="feedback"></p>
+        <p id="attempts"></p>
+      </div>
+
+      <div class="history-section">
+        <h2>Your Guesses:</h2>
+        <ul id="guess-history"></ul>
+      </div>
+
+      <button id="new-game-btn" class="hidden">Play Again</button>
+    </div>
+
+    <div class="concepts-section">
+      <h2>Programming Concepts Demonstrated:</h2>
+      <ul>
+        <li><strong>Variables:</strong> Storing the secret number, guess count, and game state</li>
+        <li><strong>Random Numbers:</strong> Generating a random number between 1-100</li>
+        <li><strong>Conditionals:</strong> Using if/else to check if guess is too high, too low, or correct</li>
+        <li><strong>Functions:</strong> Organizing code into reusable blocks (initGame, checkGuess, etc.)</li>
+        <li><strong>Loops:</strong> Processing each guess until the correct answer is found</li>
+        <li><strong>User Input/Output:</strong> Reading guesses and displaying feedback</li>
+        <li><strong>Arrays:</strong> Keeping track of all previous guesses</li>
+      </ul>
+    </div>
+
+    <p><a href="index.html">&larr; Back to home</a></p>
+
+    <script src="scripts/guessing-game.js"></script>
+  </body>
+</html>

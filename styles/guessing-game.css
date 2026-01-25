@@ -1,0 +1,177 @@
+/* Styles for the Number Guessing Game */
+
+.game-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.instructions {
+    font-size: 18px;
+    text-align: center;
+    color: #333;
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.input-section label {
+    font-size: 16px;
+    color: #333;
+}
+
+#guess-input {
+    width: 150px;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #00539F;
+    border-radius: 5px;
+}
+
+#guess-input:focus {
+    outline: none;
+    border-color: #FF9500;
+    box-shadow: 0 0 5px rgba(255, 149, 0, 0.5);
+}
+
+button {
+    padding: 10px 30px;
+    font-size: 18px;
+    background-color: #00539F;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #003d75;
+}
+
+button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+.feedback-section {
+    text-align: center;
+    min-height: 60px;
+}
+
+#feedback {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+#feedback.correct {
+    color: #28a745;
+}
+
+#feedback.too-low {
+    color: #007bff;
+}
+
+#feedback.too-high {
+    color: #dc3545;
+}
+
+#feedback.error {
+    color: #ff6600;
+}
+
+#attempts {
+    font-size: 16px;
+    color: #666;
+}
+
+.history-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.history-section h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#guess-history {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+#guess-history li {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+#guess-history li.too-low {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+#guess-history li.too-high {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+#guess-history li.correct {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+#new-game-btn {
+    display: block;
+    margin: 20px auto 0;
+    background-color: #28a745;
+}
+
+#new-game-btn:hover {
+    background-color: #218838;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.concepts-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.concepts-section h2 {
+    font-size: 20px;
+    color: #00539F;
+    margin-bottom: 15px;
+}
+
+.concepts-section ul {
+    padding-left: 20px;
+}
+
+.concepts-section li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.concepts-section strong {
+    color: #00539F;
+}

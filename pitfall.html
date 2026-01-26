@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitfall! - Atari 2600 Clone</title>
+    <link rel="stylesheet" href="styles/pitfall.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="header">
+            <h1>PITFALL!</h1>
+            <p class="subtitle">An Atari 2600 Classic</p>
+        </div>
+
+        <div id="score-panel">
+            <div class="score-item">
+                <span class="label">SCORE</span>
+                <span id="score">0000</span>
+            </div>
+            <div class="score-item">
+                <span class="label">LIVES</span>
+                <span id="lives">♥♥♥</span>
+            </div>
+            <div class="score-item">
+                <span class="label">TIME</span>
+                <span id="timer">20:00</span>
+            </div>
+            <div class="score-item">
+                <span class="label">LEVEL</span>
+                <span id="level">1</span>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="640" height="400"></canvas>
+
+        <div id="controls-info">
+            <p><strong>Controls:</strong>
+                <span class="key">←</span><span class="key">→</span> Move |
+                <span class="key">SPACE</span> Jump |
+                <span class="key">↑</span> Climb/Grab Vine |
+                <span class="key">↓</span> Descend/Duck |
+                <span class="key">R</span> Restart
+            </p>
+        </div>
+
+        <div id="start-screen">
+            <h2>PITFALL!</h2>
+            <p>Help Pitfall Harry collect treasures while avoiding dangers!</p>
+            <div class="instructions">
+                <h3>Obstacles:</h3>
+                <ul>
+                    <li>🕳️ Expanding Pits - Time your jumps!</li>
+                    <li>🛢️ Rolling Barrels - Jump over them!</li>
+                    <li>🪨 Underground Passages - Find the ladder!</li>
+                    <li>🌿 Vines - Swing across dangers!</li>
+                    <li>🐊 Crocodiles - Jump on closed mouths!</li>
+                </ul>
+            </div>
+            <button id="startButton">START GAME</button>
+        </div>
+
+        <div id="game-over-screen" class="hidden">
+            <h2>GAME OVER</h2>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button id="restartButton">PLAY AGAIN</button>
+        </div>
+
+        <div id="level-complete-screen" class="hidden">
+            <h2>LEVEL COMPLETE!</h2>
+            <p>Score: <span id="level-score">0</span></p>
+            <p>Bonus: <span id="time-bonus">0</span></p>
+            <button id="nextLevelButton">NEXT LEVEL</button>
+        </div>
+
+        <div id="victory-screen" class="hidden">
+            <h2>🏆 CONGRATULATIONS! 🏆</h2>
+            <p>You completed all levels!</p>
+            <p>Final Score: <span id="victory-score">0</span></p>
+            <button id="playAgainButton">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="scripts/pitfall.js"></script>
+</body>
+</html>

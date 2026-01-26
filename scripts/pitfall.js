@@ -47,12 +47,14 @@ const COLORS = {
 // GAME STATE
 // ============================================
 let canvas, ctx;
-let gameState = 'start'; // 'start', 'playing', 'paused', 'gameover', 'levelcomplete', 'victory'
+let gameState = 'start'; // 'start', 'playing', 'paused', 'gameover', 'levelcomplete', 'victory', 'dying'
 let score = 0;
 let lives = 3;
 let currentLevel = 1;
 let gameTime = 1200; // 20 minutes in seconds
 let frameCount = 0;
+let deathTimer = 0; // Timer for death delay
+const DEATH_DELAY = 180; // 3 seconds at 60fps
 
 // Input state
 const keys = {
@@ -108,8 +110,39 @@ class Player {
         if (this.isClimbing) {
             this.vx = 0;
             this.vy = 0;
-            if (keys.up) this.y -= 3;
-            if (keys.down) this.y += 3;
+
+            // Find the current ladder
+            let currentLadder = null;
+            for (let ladder of level.ladders || []) {
+                if (this.x + this.width > ladder.x && this.x < ladder.x + ladder.width) {
+                    currentLadder = ladder;
+                    break;
+                }
+            }
+
+            if (currentLadder) {
+                if (keys.up) {
+                    this.y -= 3;
+                    // Stop at top of ladder and get off
+                    if (this.y + this.height <= currentLadder.y + 10) {
+                        this.y = currentLadder.y - this.height;
+                        this.isClimbing = false;
+                        this.onGround = true;
+                        this.isUnderground = false;
+                    }
+                }
+                if (keys.down) {
+                    this.y += 3;
+                    // Stop at bottom of ladder (underground floor)
+                    let undergroundFloor = GROUND_Y + 50;
+                    if (this.y + this.height >= undergroundFloor) {
+                        this.y = undergroundFloor - this.height;
+                        this.isClimbing = false;
+                        this.onGround = true;
+                        this.isUnderground = true;
+                    }
+                }
+            }
 
             // Check if still on ladder
             let onLadder = false;
@@ -192,15 +225,25 @@ class Player {
             }
         }
 
-        // Check for vine grab
-        if (keys.up) {
+        // Check for vine grab (automatic on collision)
+        if (!this.isSwinging) {
             for (let vine of level.vines || []) {
-                let vineBottom = vine.y + vine.length;
-                if (Math.abs(this.x + this.width/2 - vine.x) < 30 &&
-                    this.y < vineBottom && this.y + this.height > vine.y) {
-                    this.grabVine(vine);
-                    break;
+                let vineEndX = vine.x + Math.sin(vine.angle) * vine.length;
+                let vineEndY = vine.y + Math.cos(vine.angle) * vine.length;
+                // Check collision with vine line
+                let playerCenterX = this.x + this.width / 2;
+                let playerCenterY = this.y + this.height / 2;
+                // Check if close to any point along the vine
+                for (let t = 0; t <= 1; t += 0.1) {
+                    let vinePointX = vine.x + Math.sin(vine.angle) * vine.length * t;
+                    let vinePointY = vine.y + Math.cos(vine.angle) * vine.length * t;
+                    let dist = Math.sqrt(Math.pow(playerCenterX - vinePointX, 2) + Math.pow(playerCenterY - vinePointY, 2));
+                    if (dist < 25) {
+                        this.grabVine(vine);
+                        break;
+                    }
                 }
+                if (this.isSwinging) break;
             }
         }
     }
@@ -232,12 +275,12 @@ class Player {
         this.x = vine.x + Math.sin(vine.angle) * vine.length - this.width/2;
         this.y = vine.y + Math.cos(vine.angle) * vine.length - this.height/2;
 
-        // Release vine with jump
-        if (keys.jump) {
+        // Release vine with jump or down
+        if (keys.jump || keys.down) {
             this.isSwinging = false;
             this.swingVine = null;
             this.vx = vine.angularVel * vine.length * 0.5;
-            this.vy = JUMP_FORCE * 0.7;
+            this.vy = keys.jump ? JUMP_FORCE * 0.7 : 0;
         }
     }
 
@@ -760,16 +803,16 @@ class Level {
         for (let croc of this.crocodiles) {
             let headBox = {
                 x: croc.x + croc.width - 30,
-                y: croc.y - 10,
+                y: croc.y - 15,
                 width: 35,
-                height: 30
+                height: 35
             };
 
             // Landing on closed mouth is safe
             if (player.vy > 0 && !croc.mouthOpen) {
-                let bodyBox = { x: croc.x, y: croc.y - 15, width: croc.width, height: 15 };
+                let bodyBox = { x: croc.x, y: croc.y - 20, width: croc.width, height: 20 };
                 if (this.rectCollision(player, bodyBox)) {
-                    player.y = croc.y - 15 - player.height;
+                    player.y = croc.y - 20 - player.height;
                     player.vy = 0;
                     player.onGround = true;
                     return null;
@@ -782,37 +825,27 @@ class Level {
             }
         }
 
-        // Check water collision (if no crocodile/log to land on)
+        // Check water collision (if no crocodile to land on)
         if (this.waterArea) {
             let water = this.waterArea;
             if (player.x + player.width > water.x && player.x < water.x + water.width &&
                 player.y + player.height > water.y + 10) {
 
-                // Check if on a log
-                let onLog = false;
-                for (let log of this.logs) {
-                    if (player.x + player.width > log.x && player.x < log.x + log.width &&
-                        player.y + player.height >= log.y && player.y + player.height <= log.y + 20) {
-                        onLog = true;
-                        player.x += log.speed; // Move with log
-                        player.y = log.y - player.height;
+                // Check if on crocodile (closed mouth only)
+                let onCroc = false;
+                for (let croc of this.crocodiles) {
+                    if (!croc.mouthOpen &&
+                        player.x + player.width > croc.x && player.x < croc.x + croc.width &&
+                        player.y + player.height >= croc.y - 20 && player.y + player.height <= croc.y + 10) {
+                        onCroc = true;
+                        player.y = croc.y - 20 - player.height;
                         player.vy = 0;
                         player.onGround = true;
                         break;
                     }
                 }
 
-                // Check if on crocodile
-                for (let croc of this.crocodiles) {
-                    if (!croc.mouthOpen &&
-                        player.x + player.width > croc.x && player.x < croc.x + croc.width &&
-                        player.y + player.height >= croc.y - 15 && player.y + player.height <= croc.y + 5) {
-                        onLog = true;
-                        break;
-                    }
-                }
-
-                if (!onLog) {
+                if (!onCroc) {
                     return { type: 'water', object: water };
                 }
             }
@@ -867,7 +900,7 @@ function createLevels() {
             ],
             pits: [
                 { x: 280, y: GROUND_Y, width: 80, height: 80,
-                  expanding: true, minWidth: 40, maxWidth: 150, currentWidth: 40, timer: 0, speed: 0.03 }
+                  expanding: true, minWidth: 40, maxWidth: 150, currentWidth: 40, timer: 0, speed: 0.015 }
             ],
             treasures: [
                 { x: 150, y: GROUND_Y - 25, type: 'gold', points: 1000, collected: false },
@@ -887,18 +920,15 @@ function createLevels() {
                 { x: 100, y: 150, size: 120 },
                 { x: 400, y: 170, size: 100 }
             ],
-            platforms: [
-                { x: 200, y: GROUND_Y - 60, width: 100, height: 20 },
-                { x: 400, y: GROUND_Y - 100, width: 80, height: 20 }
-            ],
+            platforms: [],
             barrels: [
-                { x: 0, y: GROUND_Y - 35, width: 35, height: 35, speed: 3, rotation: 0 },
-                { x: 200, y: GROUND_Y - 35, width: 35, height: 35, speed: 4, rotation: 0 },
-                { x: 400, y: GROUND_Y - 35, width: 35, height: 35, speed: 2.5, rotation: 0 }
+                { x: 0, y: GROUND_Y - 35, width: 35, height: 35, speed: 1.5, rotation: 0 },
+                { x: 200, y: GROUND_Y - 35, width: 35, height: 35, speed: 2, rotation: 0 },
+                { x: 400, y: GROUND_Y - 35, width: 35, height: 35, speed: 1.2, rotation: 0 }
             ],
             treasures: [
-                { x: 230, y: GROUND_Y - 85, type: 'money', points: 1500, collected: false },
-                { x: 420, y: GROUND_Y - 125, type: 'gold', points: 2000, collected: false }
+                { x: 230, y: GROUND_Y - 25, type: 'money', points: 1500, collected: false },
+                { x: 420, y: GROUND_Y - 25, type: 'gold', points: 2000, collected: false }
             ],
             exitX: 600
         }),
@@ -954,8 +984,8 @@ function createLevels() {
                 { x: 500, y: 50, length: 140, angle: 0, angularVel: 0, phase: Math.PI }
             ],
             treasures: [
-                { x: 300, y: 100, type: 'ring', points: 2500, collected: false },
-                { x: 480, y: 120, type: 'gold', points: 2000, collected: false }
+                { x: 50, y: GROUND_Y - 25, type: 'ring', points: 2500, collected: false },
+                { x: 560, y: GROUND_Y - 25, type: 'gold', points: 2000, collected: false }
             ],
             exitX: 600
         }),
@@ -970,22 +1000,18 @@ function createLevels() {
             ],
             waterArea: {
                 x: 120,
-                y: GROUND_Y - 20,
+                y: GROUND_Y + 10,
                 width: 400,
-                height: 100
+                height: 80
             },
             crocodiles: [
-                { x: 140, y: GROUND_Y, width: 80, height: 25, mouthOpen: false, timer: 0, speed: 0.04 },
-                { x: 260, y: GROUND_Y, width: 80, height: 25, mouthOpen: false, timer: Math.PI/2, speed: 0.05 },
-                { x: 380, y: GROUND_Y, width: 80, height: 25, mouthOpen: false, timer: Math.PI, speed: 0.035 }
+                { x: 140, y: GROUND_Y + 15, width: 80, height: 25, mouthOpen: false, timer: 0, speed: 0.04 },
+                { x: 260, y: GROUND_Y + 15, width: 80, height: 25, mouthOpen: false, timer: Math.PI/2, speed: 0.05 },
+                { x: 380, y: GROUND_Y + 15, width: 80, height: 25, mouthOpen: false, timer: Math.PI, speed: 0.035 }
             ],
-            logs: [
-                { x: 200, y: GROUND_Y - 10, width: 60, height: 15, speed: 0.5 },
-                { x: 350, y: GROUND_Y - 10, width: 50, height: 15, speed: -0.3 }
-            ],
+            logs: [],
             treasures: [
                 { x: 50, y: GROUND_Y - 25, type: 'gold', points: 1000, collected: false },
-                { x: 300, y: GROUND_Y - 45, type: 'ring', points: 3000, collected: false },
                 { x: 550, y: GROUND_Y - 25, type: 'money', points: 2000, collected: false }
             ],
             exitX: 600
@@ -1175,6 +1201,22 @@ function gameLoop() {
                 document.getElementById('final-score').textContent = score;
             }
         }
+    } else if (gameState === 'dying') {
+        // Keep updating level elements for visual continuity
+        currentLevelObj.update();
+
+        // Death delay - wait 3 seconds before respawning
+        deathTimer--;
+        if (deathTimer <= 0) {
+            if (lives <= 0) {
+                gameState = 'gameover';
+                showScreen('game-over-screen');
+                document.getElementById('final-score').textContent = score;
+            } else {
+                player.reset(50, GROUND_Y - 50);
+                gameState = 'playing';
+            }
+        }
     }
 
     render();
@@ -1197,12 +1239,10 @@ function update() {
             case 'barrel':
             case 'crocodile':
             case 'hazard':
-                if (player.takeDamage()) {
-                    // Game over handled in takeDamage
-                } else {
-                    // Reset player position
-                    player.reset(50, GROUND_Y - 50);
-                }
+                lives--;
+                updateUI();
+                gameState = 'dying';
+                deathTimer = DEATH_DELAY;
                 break;
             case 'exit':
                 completeLevel();
@@ -1216,12 +1256,28 @@ function render() {
     ctx.fillStyle = COLORS.sky;
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    if (gameState === 'playing' || gameState === 'levelcomplete') {
+    if (gameState === 'playing' || gameState === 'levelcomplete' || gameState === 'dying') {
         // Draw level
         currentLevelObj.draw(ctx);
 
-        // Draw player
-        player.draw(ctx);
+        // Draw player (flash red during dying state)
+        if (gameState === 'dying') {
+            ctx.save();
+            if (frameCount % 20 < 10) {
+                ctx.globalAlpha = 0.5;
+            }
+            player.draw(ctx);
+            ctx.restore();
+
+            // Show death message
+            ctx.fillStyle = '#FF0000';
+            ctx.font = 'bold 24px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('OUCH!', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+            ctx.textAlign = 'left';
+        } else {
+            player.draw(ctx);
+        }
 
         // Draw level name
         ctx.fillStyle = '#FFFFFF';

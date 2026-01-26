@@ -1,0 +1,249 @@
+/* Pitfall! - Atari 2600 Style CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+    border: 4px solid #444;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+}
+
+#header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#header h1 {
+    font-size: 2.5em;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    letter-spacing: 8px;
+}
+
+#header .subtitle {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+#score-panel {
+    display: flex;
+    justify-content: space-around;
+    width: 640px;
+    background: #222;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 2px solid #444;
+    border-radius: 5px;
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-item .label {
+    font-size: 0.7em;
+    color: #888;
+}
+
+.score-item span:not(.label) {
+    font-size: 1.2em;
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+#lives {
+    color: #ff4444 !important;
+}
+
+#gameCanvas {
+    border: 4px solid #333;
+    background-color: #87CEEB;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+#controls-info {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #222;
+    border-radius: 5px;
+    font-size: 0.85em;
+    color: #aaa;
+}
+
+#controls-info .key {
+    display: inline-block;
+    background: #444;
+    padding: 2px 8px;
+    margin: 0 3px;
+    border-radius: 3px;
+    border: 1px solid #666;
+    font-size: 0.9em;
+}
+
+/* Overlay Screens */
+#start-screen,
+#game-over-screen,
+#level-complete-screen,
+#victory-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    border: 3px solid #00ff00;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+    z-index: 100;
+    min-width: 400px;
+}
+
+#start-screen h2,
+#game-over-screen h2,
+#level-complete-screen h2,
+#victory-screen h2 {
+    color: #00ff00;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+#start-screen p,
+#game-over-screen p,
+#level-complete-screen p,
+#victory-screen p {
+    color: #ccc;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.instructions {
+    text-align: left;
+    margin: 20px 0;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 5px;
+}
+
+.instructions h3 {
+    color: #ffcc00;
+    margin-bottom: 10px;
+}
+
+.instructions ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+.instructions li {
+    margin: 8px 0;
+    color: #aaa;
+}
+
+button {
+    background: linear-gradient(180deg, #00aa00 0%, #006600 100%);
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: linear-gradient(180deg, #00cc00 0%, #008800 100%);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Game Over specific */
+#game-over-screen h2 {
+    color: #ff4444;
+    text-shadow: 0 0 10px #ff4444;
+}
+
+#game-over-screen {
+    border-color: #ff4444;
+    box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
+}
+
+/* Victory specific */
+#victory-screen h2 {
+    color: #ffcc00;
+    text-shadow: 0 0 10px #ffcc00;
+}
+
+#victory-screen {
+    border-color: #ffcc00;
+    box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
+}
+
+/* Level Complete specific */
+#level-complete-screen {
+    border-color: #00ccff;
+    box-shadow: 0 0 30px rgba(0, 204, 255, 0.3);
+}
+
+#level-complete-screen h2 {
+    color: #00ccff;
+    text-shadow: 0 0 10px #00ccff;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    #gameCanvas {
+        width: 100%;
+        height: auto;
+    }
+
+    #score-panel {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    #start-screen,
+    #game-over-screen,
+    #level-complete-screen,
+    #victory-screen {
+        width: 90%;
+        min-width: auto;
+        padding: 20px;
+    }
+}

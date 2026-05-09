@@ -12,6 +12,7 @@ import sys
 import time
 import urllib.request
 import urllib.parse
+import urllib.error
 
 
 def get_count_for_year(api_key, year):
@@ -27,6 +28,12 @@ def get_count_for_year(api_key, year):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read())
+
+    # Debug: print structure if unexpected
+    if "response" not in data or "meta" not in data.get("response", {}):
+        print(f"  Unexpected response: {json.dumps(data)[:300]}", file=sys.stderr)
+        return None
+
     return data["response"]["meta"]["hits"]
 
 
@@ -39,24 +46,50 @@ def main():
     api_key = sys.argv[1]
     results = {}
 
+    # Load existing results so we can resume if interrupted
+    try:
+        with open("nyt_ai_counts.json") as f:
+            results = {int(k): v for k, v in json.load(f).items()}
+        print(f"Resuming from existing nyt_ai_counts.json ({len(results)} years already done)")
+    except FileNotFoundError:
+        pass
+
     for year in range(1950, 2027):
-        try:
-            count = get_count_for_year(api_key, year)
-            results[year] = count
-            print(f"{year}: {count}", flush=True)
-        except Exception as e:
-            print(f"{year}: ERROR - {e}", file=sys.stderr)
-            results[year] = None
+        if year in results and results[year] is not None:
+            print(f"{year}: {results[year]} (cached)", flush=True)
+            continue
 
-        # NYT API rate limit: 10 requests/minute for free tier
-        time.sleep(6)
+        retries = 3
+        for attempt in range(retries):
+            try:
+                count = get_count_for_year(api_key, year)
+                results[year] = count
+                print(f"{year}: {count}", flush=True)
+                break
+            except urllib.error.HTTPError as e:
+                if e.code == 429:
+                    wait = 30 * (attempt + 1)
+                    print(f"{year}: rate limited, waiting {wait}s...", file=sys.stderr)
+                    time.sleep(wait)
+                else:
+                    print(f"{year}: HTTP {e.code} - {e}", file=sys.stderr)
+                    results[year] = None
+                    break
+            except Exception as e:
+                print(f"{year}: ERROR - {e}", file=sys.stderr)
+                results[year] = None
+                break
 
-    with open("nyt_ai_counts.json", "w") as f:
-        json.dump(results, f, indent=2)
+        # Save after every year so progress isn't lost
+        with open("nyt_ai_counts.json", "w") as f:
+            json.dump(results, f, indent=2)
 
-    print("\nSaved to nyt_ai_counts.json")
+        # 13 seconds between requests = ~4.5 req/min, well under the 10/min limit
+        time.sleep(13)
+
+    print("\nAll done! Saved to nyt_ai_counts.json")
     print("\nJSON dump for copy-paste:")
-    print(json.dumps(results))
+    print(json.dumps({str(y): results.get(y) for y in range(1950, 2027)}))
 
 
 if __name__ == "__main__":

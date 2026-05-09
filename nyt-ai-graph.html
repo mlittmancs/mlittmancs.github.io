@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYT "Artificial Intelligence" References (1950–2026)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #fdf6e3;
+      color: #222;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+    p.subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    canvas { display: block; }
+    p.note {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="chart-container">
+    <h1>New York Times References to "Artificial Intelligence"</h1>
+    <p class="subtitle">Number of articles per year, 1950–2026</p>
+    <canvas id="chart" height="120"></canvas>
+    <p class="note">
+      Source: <a href="https://www.nytimes.com/search" target="_blank">NYT Article Search</a>
+      &mdash; query: <em>"artificial intelligence"</em>
+    </p>
+  </div>
+
+  <script>
+    // Replace this object with actual data from fetch_nyt_counts_api.py or fetch_nyt_counts.py
+    const counts = COUNTS_PLACEHOLDER;
+
+    const labels = Object.keys(counts).map(Number).sort((a, b) => a - b);
+    const data   = labels.map(y => counts[y] ?? 0);
+
+    new Chart(document.getElementById('chart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Articles mentioning "artificial intelligence"',
+          data,
+          backgroundColor: 'rgba(50, 100, 180, 0.75)',
+          borderColor:     'rgba(50, 100, 180, 1)',
+          borderWidth: 1,
+          borderRadius: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => `Year: ${ctx[0].label}`,
+              label: ctx => `${ctx.raw.toLocaleString()} article${ctx.raw !== 1 ? 's' : ''}`,
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              maxRotation: 45,
+              callback: (val, i) => {
+                const year = labels[i];
+                return year % 5 === 0 ? year : '';
+              }
+            },
+            grid: { display: false }
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Number of Articles' },
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

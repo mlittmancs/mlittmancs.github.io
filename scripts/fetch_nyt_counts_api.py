@@ -29,12 +29,14 @@ def get_count_for_year(api_key, year):
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read())
 
-    # Debug: print structure if unexpected
-    if "response" not in data or "meta" not in data.get("response", {}):
+    response = data.get("response", {})
+    # API returns either "meta" or "metadata" depending on the endpoint version
+    meta = response.get("meta") or response.get("metadata")
+    if meta is None:
         print(f"  Unexpected response: {json.dumps(data)[:300]}", file=sys.stderr)
         return None
 
-    return data["response"]["meta"]["hits"]
+    return meta["hits"]
 
 
 def main():

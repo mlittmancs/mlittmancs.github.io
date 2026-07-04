@@ -25,8 +25,9 @@
         ctx.clearRect(0, 0, w, h);
 
         const skinTone = '#f4c99b';
+        const featureColor = '#a8674a';
         ctx.lineWidth = 4;
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = featureColor;
         ctx.lineJoin = 'round';
 
         // Ears

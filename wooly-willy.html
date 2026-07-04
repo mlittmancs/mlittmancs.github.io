@@ -17,15 +17,8 @@
 
         <div class="toolbar">
             <div class="tool-group">
-                <span class="tool-label">Pen thickness</span>
-                <div class="presets" id="preset-buttons">
-                    <button type="button" class="preset-btn" data-size="2">Fine</button>
-                    <button type="button" class="preset-btn" data-size="5">Medium</button>
-                    <button type="button" class="preset-btn active" data-size="10">Thick</button>
-                    <button type="button" class="preset-btn" data-size="18">Bold</button>
-                </div>
-                <input type="range" id="thickness" min="1" max="24" value="10">
-                <span id="thickness-value">10px</span>
+                <button type="button" id="undo-btn" class="secondary-btn" disabled>Undo</button>
+                <button type="button" id="redo-btn" class="secondary-btn" disabled>Redo</button>
             </div>
 
             <div class="tool-group">

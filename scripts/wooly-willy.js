@@ -18,13 +18,15 @@
     const drawCtx = drawCanvas.getContext('2d');
     const pendingCtx = pendingCanvas.getContext('2d');
 
-    const thicknessInput = document.getElementById('thickness');
-    const thicknessValue = document.getElementById('thickness-value');
-    const presetButtons = document.querySelectorAll('.preset-btn');
+    const undoBtn = document.getElementById('undo-btn');
+    const redoBtn = document.getElementById('redo-btn');
     const clearBtn = document.getElementById('clear-btn');
 
     const W = faceCanvas.width;
     const H = faceCanvas.height;
+
+    // Pen is fixed - "thick" is the only weight for now.
+    const PEN_THICKNESS = 10;
 
     // Shared face geometry, also used by drawFace() below.
     const geo = {
@@ -36,19 +38,25 @@
         earRightX: W * 0.84,
     };
 
-    let penThickness = parseInt(thicknessInput.value, 10);
     let isDrawing = false;
     let lastX = 0;
     let lastY = 0;
+    let strokeChanged = false;
 
     // --- Connectivity grid for the constrained lower half -------------
+    //
+    // The grid is kept fine (small cells, tight marking radius) relative to
+    // the pen so that ink only registers as "touching" when it visually
+    // overlaps - a coarser grid let separate, visually-floating patches
+    // count as connected.
 
-    const CELL_SIZE = 6;
+    const CELL_SIZE = 4;
+    const MARK_RADIUS = PEN_THICKNESS / 2 + 1;
     const GRID_COLS = Math.ceil(W / CELL_SIZE);
     const GRID_ROWS = Math.ceil(H / CELL_SIZE);
 
     const anchorGrid = new Uint8Array(GRID_COLS * GRID_ROWS);
-    const validInkGrid = new Uint8Array(GRID_COLS * GRID_ROWS);
+    let validInkGrid = new Uint8Array(GRID_COLS * GRID_ROWS);
     let pendingCells = new Set();
 
     function cellIndex(col, row) {
@@ -79,11 +87,10 @@
     }
 
     function markCellsNear(x, y) {
-        const radius = penThickness / 2 + CELL_SIZE;
-        const minCol = Math.max(0, Math.floor((x - radius) / CELL_SIZE));
-        const maxCol = Math.min(GRID_COLS - 1, Math.floor((x + radius) / CELL_SIZE));
-        const minRow = Math.max(0, Math.floor((y - radius) / CELL_SIZE));
-        const maxRow = Math.min(GRID_ROWS - 1, Math.floor((y + radius) / CELL_SIZE));
+        const minCol = Math.max(0, Math.floor((x - MARK_RADIUS) / CELL_SIZE));
+        const maxCol = Math.min(GRID_COLS - 1, Math.floor((x + MARK_RADIUS) / CELL_SIZE));
+        const minRow = Math.max(0, Math.floor((y - MARK_RADIUS) / CELL_SIZE));
+        const maxRow = Math.min(GRID_ROWS - 1, Math.floor((y + MARK_RADIUS) / CELL_SIZE));
 
         for (let row = minRow; row <= maxRow; row++) {
             const cellY = row * CELL_SIZE + CELL_SIZE / 2;
@@ -91,7 +98,7 @@
                 const cellX = col * CELL_SIZE + CELL_SIZE / 2;
                 const dx = cellX - x;
                 const dy = cellY - y;
-                if (dx * dx + dy * dy <= radius * radius) {
+                if (dx * dx + dy * dy <= MARK_RADIUS * MARK_RADIUS) {
                     pendingCells.add(cellIndex(col, row));
                 }
             }
@@ -144,7 +151,59 @@
         return 2 * geo.cx - x;
     }
 
-    // --- Face rendering -------------------------------------------------
+    // --- Undo / redo -----------------------------------------------------
+
+    const HISTORY_LIMIT = 50;
+    let undoStack = [];
+    let redoStack = [];
+    let strokeStartSnapshot = null;
+
+    function snapshotState() {
+        return {
+            imageData: drawCtx.getImageData(0, 0, W, H),
+            grid: validInkGrid.slice(),
+        };
+    }
+
+    function restoreState(state) {
+        drawCtx.putImageData(state.imageData, 0, 0);
+        validInkGrid = state.grid.slice();
+        clearPendingCanvas();
+        pendingCells = new Set();
+    }
+
+    function pushUndo(snapshot) {
+        undoStack.push(snapshot);
+        if (undoStack.length > HISTORY_LIMIT) undoStack.shift();
+        redoStack = [];
+        updateHistoryButtons();
+    }
+
+    function updateHistoryButtons() {
+        undoBtn.disabled = undoStack.length === 0;
+        redoBtn.disabled = redoStack.length === 0;
+    }
+
+    function undo() {
+        if (undoStack.length === 0) return;
+        const prev = undoStack.pop();
+        redoStack.push(snapshotState());
+        restoreState(prev);
+        updateHistoryButtons();
+    }
+
+    function redo() {
+        if (redoStack.length === 0) return;
+        const next = redoStack.pop();
+        undoStack.push(snapshotState());
+        restoreState(next);
+        updateHistoryButtons();
+    }
+
+    undoBtn.addEventListener('click', undo);
+    redoBtn.addEventListener('click', redo);
+
+    // --- Face rendering ---------------------------------------------------
 
     function drawFace() {
         const w = W;
@@ -216,7 +275,7 @@
 
     function dotAt(ctx, x, y) {
         ctx.beginPath();
-        ctx.arc(x, y, penThickness / 2, 0, Math.PI * 2);
+        ctx.arc(x, y, PEN_THICKNESS / 2, 0, Math.PI * 2);
         ctx.fillStyle = '#000';
         ctx.fill();
     }
@@ -225,7 +284,7 @@
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = penThickness;
+        ctx.lineWidth = PEN_THICKNESS;
         ctx.beginPath();
         ctx.moveTo(x0, y0);
         ctx.lineTo(x1, y1);
@@ -259,6 +318,7 @@
                 validInkGrid[idx] = 1;
             });
             clearPendingCanvas();
+            strokeChanged = true;
         } else {
             pendingCanvas.style.transition = 'opacity 250ms ease-out';
             pendingCanvas.style.opacity = '0';
@@ -275,6 +335,8 @@
     function startDraw(evt) {
         evt.preventDefault();
         isDrawing = true;
+        strokeChanged = false;
+        strokeStartSnapshot = snapshotState();
         const p = getCanvasPoint(evt);
         lastX = p.x;
         lastY = p.y;
@@ -282,6 +344,7 @@
 
         if (p.y < geo.cy) {
             dotAt(drawCtx, p.x, p.y);
+            strokeChanged = true;
         } else {
             drawConstrainedDot(p.x, p.y);
         }
@@ -300,6 +363,7 @@
 
         if (fromAbove && toAbove) {
             strokeSegment(drawCtx, lastX, lastY, p.x, p.y);
+            strokeChanged = true;
         } else if (!fromAbove && !toAbove) {
             drawConstrainedSegment(lastX, lastY, p.x, p.y);
         } else {
@@ -308,10 +372,12 @@
             const ix = lastX + (p.x - lastX) * t;
             if (fromAbove) {
                 strokeSegment(drawCtx, lastX, lastY, ix, geo.cy);
+                strokeChanged = true;
                 drawConstrainedSegment(ix, geo.cy, p.x, p.y);
             } else {
                 drawConstrainedSegment(lastX, lastY, ix, geo.cy);
                 strokeSegment(drawCtx, ix, geo.cy, p.x, p.y);
+                strokeChanged = true;
             }
         }
 
@@ -320,7 +386,12 @@
     }
 
     function endDraw() {
-        if (isDrawing) resolveConstrainedStroke();
+        if (!isDrawing) return;
+        resolveConstrainedStroke();
+        if (strokeChanged && strokeStartSnapshot) {
+            pushUndo(strokeStartSnapshot);
+        }
+        strokeStartSnapshot = null;
         isDrawing = false;
     }
 
@@ -330,27 +401,8 @@
     drawCanvas.addEventListener('pointercancel', endDraw);
     drawCanvas.addEventListener('pointerleave', endDraw);
 
-    function setThickness(size) {
-        penThickness = size;
-        thicknessInput.value = size;
-        thicknessValue.textContent = size + 'px';
-
-        presetButtons.forEach((btn) => {
-            btn.classList.toggle('active', parseInt(btn.dataset.size, 10) === size);
-        });
-    }
-
-    thicknessInput.addEventListener('input', () => {
-        setThickness(parseInt(thicknessInput.value, 10));
-    });
-
-    presetButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            setThickness(parseInt(btn.dataset.size, 10));
-        });
-    });
-
     clearBtn.addEventListener('click', () => {
+        pushUndo(snapshotState());
         drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
         clearPendingCanvas();
         validInkGrid.fill(0);
@@ -358,5 +410,5 @@
 
     buildAnchorGrid();
     drawFace();
-    setThickness(penThickness);
+    updateHistoryButtons();
 })();

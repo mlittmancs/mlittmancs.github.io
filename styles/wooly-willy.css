@@ -59,45 +59,23 @@ h1 {
     justify-content: center;
 }
 
-.tool-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #333;
-}
-
-.presets {
-    display: flex;
-    gap: 6px;
-}
-
-.preset-btn {
-    padding: 6px 12px;
-    font-size: 13px;
+.secondary-btn {
+    padding: 8px 18px;
+    font-size: 14px;
     background-color: #e5e7eb;
     color: #333;
-    border: 2px solid transparent;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
 }
 
-.preset-btn:hover {
+.secondary-btn:hover:not(:disabled) {
     background-color: #d8dbe0;
 }
 
-.preset-btn.active {
-    background-color: #00539F;
-    color: #fff;
-    border-color: #003d75;
-}
-
-#thickness {
-    width: 120px;
-}
-
-#thickness-value {
-    font-size: 13px;
-    color: #333;
-    min-width: 34px;
+.secondary-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 #clear-btn {

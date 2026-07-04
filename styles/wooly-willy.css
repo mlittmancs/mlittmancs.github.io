@@ -145,6 +145,10 @@ h1 {
     cursor: crosshair;
 }
 
+#pending-canvas {
+    pointer-events: none;
+}
+
 .back-link {
     text-align: center;
     padding: 15px 0 5px;

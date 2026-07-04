@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wooly Face - Magnetic-Style Drawing Toy</title>
+    <link rel="stylesheet" href="styles/wooly-willy.css">
+</head>
+<body>
+    <div id="page">
+        <h1>Wooly Face</h1>
+        <p class="subtitle">
+            Inspired by the classic
+            <a href="https://www.fatbraintoys.com/toy_companies/playmonster/original_wooly_willy_magnetic_personality.cfm" target="_blank" rel="noopener">Wooly Willy</a>
+            magnetic drawing toy. Draw hair, a mustache, a beard&mdash;anything&mdash;on the blank face below.
+        </p>
+
+        <div class="toolbar">
+            <div class="tool-group">
+                <button type="button" id="undo-btn" class="secondary-btn" disabled>Undo</button>
+                <button type="button" id="redo-btn" class="secondary-btn" disabled>Redo</button>
+            </div>
+
+            <div class="tool-group">
+                <button type="button" id="clear-btn">Clear Drawing</button>
+            </div>
+        </div>
+
+        <div class="canvas-wrapper" id="canvas-wrapper">
+            <canvas id="face-canvas" width="500" height="620"></canvas>
+            <canvas id="draw-canvas" width="500" height="620"></canvas>
+            <canvas id="pending-canvas" width="500" height="620"></canvas>
+        </div>
+
+        <p class="back-link"><a href="index.html">&larr; Back to home</a></p>
+    </div>
+
+    <script src="scripts/wooly-willy.js"></script>
+</body>
+</html>

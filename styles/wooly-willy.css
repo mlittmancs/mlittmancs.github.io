@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #1f2937;
+    font-family: 'Segoe UI', 'Open Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+}
+
+#page {
+    width: 100%;
+    max-width: 560px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px 25px 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+h1 {
+    text-align: center;
+    margin: 0 0 10px;
+    color: #1f2937;
+}
+
+.subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 20px;
+}
+
+.subtitle a {
+    color: #00539F;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: #f2f4f7;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.secondary-btn {
+    padding: 8px 18px;
+    font-size: 14px;
+    background-color: #e5e7eb;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.secondary-btn:hover:not(:disabled) {
+    background-color: #d8dbe0;
+}
+
+.secondary-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#clear-btn {
+    padding: 8px 18px;
+    font-size: 14px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#clear-btn:hover {
+    background-color: #b02a37;
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 0 2px #333 inset;
+}
+
+.canvas-wrapper canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+#face-canvas {
+    position: relative;
+    background-color: #fdf6ec;
+    touch-action: none;
+}
+
+#draw-canvas {
+    touch-action: none;
+    cursor: crosshair;
+}
+
+#pending-canvas {
+    pointer-events: none;
+}
+
+.back-link {
+    text-align: center;
+    padding: 15px 0 5px;
+}
+
+.back-link a {
+    color: #00539F;
+    text-decoration: none;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}

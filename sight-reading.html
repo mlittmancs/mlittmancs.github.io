@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sight-Reading Trainer</title>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="styles/sight-reading.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <h1>Sight-Reading Trainer</h1>
+
+    <div class="game-container">
+      <p class="instructions">
+        A short, well-known melody appears below in a random key. Try to read
+        and name it, then reveal the answer to hear it played with the
+        current note highlighted.
+      </p>
+
+      <div class="round-meta">
+        <span id="round-label">Round 1</span>
+        <span id="key-label">Key: C major</span>
+      </div>
+
+      <div class="notation-wrap">
+        <div id="notation"></div>
+      </div>
+
+      <p id="melody-title" class="melody-title hidden"></p>
+
+      <div class="input-section">
+        <label for="guess-input">Name that melody:</label>
+        <input type="text" id="guess-input" placeholder="Type your guess (optional)" autocomplete="off">
+      </div>
+
+      <div class="controls-section">
+        <button id="reveal-btn">Reveal &amp; Play</button>
+        <button id="replay-btn" disabled>&#9658; Play Again</button>
+        <button id="next-btn" disabled>Next Melody</button>
+      </div>
+
+      <p id="guess-feedback" class="guess-feedback"></p>
+    </div>
+
+    <p><a href="index.html">&larr; Back to home</a></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.5/build/cjs/vexflow.js"></script>
+    <script src="scripts/melody-theory.js"></script>
+    <script src="scripts/melodies.js"></script>
+    <script src="scripts/sight-reading.js"></script>
+  </body>
+</html>

@@ -78,6 +78,7 @@
   global.MelodyTheory = {
     KEYS: KEYS,
     KEY_NAMES: KEY_NAMES,
+    isDotted: isDotted,
     beatsForDuration: beatsForDuration,
     vexDuration: vexDuration,
     pitchForStep: pitchForStep,

@@ -1,0 +1,133 @@
+/* Styles for the Sight-Reading Trainer */
+
+.game-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.instructions {
+    font-size: 18px;
+    text-align: center;
+    color: #333;
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.input-section label {
+    font-size: 16px;
+    color: #333;
+}
+
+#guess-input {
+    width: 260px;
+    max-width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    border: 2px solid #00539F;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#guess-input:focus {
+    outline: none;
+    border-color: #FF9500;
+    box-shadow: 0 0 5px rgba(255, 149, 0, 0.5);
+}
+
+button {
+    padding: 10px 30px;
+    font-size: 18px;
+    background-color: #00539F;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover:not(:disabled) {
+    background-color: #003d75;
+}
+
+button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.round-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.notation-wrap {
+    background-color: #fdfdfd;
+    border: 2px solid #00539F;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-x: auto;
+}
+
+#notation svg {
+    display: block;
+}
+
+.melody-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #00539F;
+    min-height: 30px;
+    margin: 15px 0 5px;
+}
+
+.controls-section {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#replay-btn {
+    background-color: #FF9500;
+}
+
+#replay-btn:hover:not(:disabled) {
+    background-color: #cc7700;
+}
+
+#next-btn {
+    background-color: #28a745;
+}
+
+#next-btn:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+.guess-feedback {
+    text-align: center;
+    min-height: 24px;
+    font-size: 15px;
+    color: #666;
+}
+
+.guess-feedback.correct {
+    color: #28a745;
+    font-weight: bold;
+}

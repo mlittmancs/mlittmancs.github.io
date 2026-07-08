@@ -62,7 +62,7 @@
       [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'h' }],
       [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'h' }],
       [{ s: 5, d: 'q' }, { s: 4, d: 'q' }, { s: 3, d: 'q' }, { s: 1, d: 'q' }],
-      [{ s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'h' }],
+      [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'q' }],
     ]},
     { id: 'ring_around_rosie', title: 'Ring Around the Rosie', meter: '4/4', measures: [
       [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'q' }],
@@ -71,10 +71,9 @@
       [{ s: 0, d: 'w' }],
     ]},
     { id: 'mulberry_bush', title: 'Here We Go Round the Mulberry Bush', meter: '4/4', measures: [
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 1, d: 'q' }, { s: 1, d: 'q' }, { s: 1, d: 'h' }],
+      [{ s: -3, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
       [{ s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 4, d: 'h' }, { s: 0, d: 'h' }],
+      [{ s: 2, d: 'w' }],
     ]},
     { id: 'yankee_doodle', title: 'Yankee Doodle', meter: '4/4', measures: [
       [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }],
@@ -163,7 +162,7 @@
     { id: 'jingle_bells', title: 'Jingle Bells', meter: '4/4', measures: [
       [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'h' }],
       [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'h' }],
-      [{ s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 1, d: 'q' }],
+      [{ s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 0, d: 'q.' }, { s: 1, d: '8' }],
       [{ s: 2, d: 'w' }],
     ]},
     { id: 'deck_the_halls', title: 'Deck the Halls', meter: '4/4', measures: [
@@ -244,10 +243,10 @@
       [{ s: 0, d: 'w' }],
     ]},
     { id: 'wheels_bus', title: 'The Wheels on the Bus', meter: '4/4', measures: [
-      [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'q' }],
-      [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 2, d: 'w' }],
+      [{ s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 2, d: '8' }, { s: 0, d: '8' }],
+      [{ s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'h' }],
     ]},
     { id: 'raining_pouring', title: "It's Raining, It's Pouring", meter: '4/4', measures: [
       [{ s: 4, d: 'h' }, { s: 2, d: 'h' }],

@@ -137,10 +137,10 @@
       [{ s: 3, d: 'q' }, { s: 4, d: 'h' }],
     ]},
     { id: 'clementine', title: 'Clementine', meter: '3/4', measures: [
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'q' }],
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'q' }],
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'q' }],
-      [{ s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
+      [{ s: 4, d: 'q' }, { s: 3, d: 'q' }, { s: 2, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }],
+      [{ s: 3, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'q' }],
     ]},
     { id: 'take_me_out', title: 'Take Me Out to the Ball Game', meter: '3/4', measures: [
       [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'q' }],

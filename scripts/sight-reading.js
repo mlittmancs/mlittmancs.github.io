@@ -127,13 +127,16 @@
             midi = pitch.midi;
           }
           const staveNote = new VF.StaveNote({ keys: [vexKey], duration: duration, clef: 'treble' });
+          if (MelodyTheory.isDotted(n.d)) {
+            VF.Dot.buildAndAttach([staveNote], { all: true });
+          }
           allNotes.push({ vexNote: staveNote, midi: midi, isRest: isRest, beats: MelodyTheory.beatsForDuration(n.d) });
           return staveNote;
         });
 
         voice.addTickables(vexNotes);
         const beams = VF.Beam.generateBeams(vexNotes.filter((n) => !n.isRest()));
-        new VF.Formatter().joinVoices([voice]).format([voice], stave.getNoteEndX() - stave.getNoteStartX() - 20);
+        new VF.Formatter().joinVoices([voice]).format([voice], stave.getNoteEndX() - stave.getNoteStartX() - 20, { stave: stave });
         voice.draw(context, stave);
         beams.forEach((beam) => beam.setContext(context).draw());
 

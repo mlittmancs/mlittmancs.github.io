@@ -132,12 +132,10 @@
         });
 
         voice.addTickables(vexNotes);
+        const beams = VF.Beam.generateBeams(vexNotes.filter((n) => !n.isRest()));
         new VF.Formatter().joinVoices([voice]).format([voice], stave.getNoteEndX() - stave.getNoteStartX() - 20);
         voice.draw(context, stave);
-
-        VF.Beam.generateBeams(vexNotes.filter((n) => !n.isRest())).forEach((beam) => {
-          beam.setContext(context).draw();
-        });
+        beams.forEach((beam) => beam.setContext(context).draw());
 
         x += width;
       });

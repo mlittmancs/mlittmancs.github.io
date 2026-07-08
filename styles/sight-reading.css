@@ -71,6 +71,22 @@ button:disabled {
     display: none !important;
 }
 
+.mode-section {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #333;
+}
+
+.mode-section label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
 .round-meta {
     display: flex;
     justify-content: space-between;
@@ -108,7 +124,7 @@ button:disabled {
     margin: 15px 0;
 }
 
-#replay-btn {
+#replay-btn:not(:disabled) {
     background-color: #FF9500;
 }
 
@@ -116,7 +132,7 @@ button:disabled {
     background-color: #cc7700;
 }
 
-#next-btn {
+#next-btn:not(:disabled) {
     background-color: #28a745;
 }
 

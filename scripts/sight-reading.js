@@ -34,7 +34,12 @@
     return melody;
   }
 
+  function isBeginnerMode() {
+    return document.getElementById('mode-beginner').checked;
+  }
+
   function pickKey() {
+    if (isBeginnerMode()) return 'C';
     const names = MelodyTheory.KEY_NAMES;
     return names[Math.floor(Math.random() * names.length)];
   }
@@ -280,6 +285,8 @@
     el('guess-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !el('reveal-btn').disabled) handleReveal();
     });
+    el('mode-beginner').addEventListener('change', startNewRound);
+    el('mode-advanced').addEventListener('change', startNewRound);
     startNewRound();
   });
 })();

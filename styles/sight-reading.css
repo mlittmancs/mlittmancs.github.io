@@ -1,5 +1,9 @@
 /* Styles for the Sight-Reading Trainer */
 
+body {
+    width: 700px;
+}
+
 .game-container {
     background-color: #fff;
     padding: 20px;

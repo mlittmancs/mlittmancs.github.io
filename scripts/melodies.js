@@ -53,15 +53,16 @@
       [{ s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'h' }],
     ]},
     { id: 'old_macdonald', title: 'Old MacDonald Had a Farm', meter: '4/4', measures: [
-      [{ s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 1, d: 'q' }],
-      [{ s: 2, d: 'q' }, { s: 1, d: 'q' }, { s: 0, d: 'h' }],
+      [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 4, d: 'q' }],
+      [{ s: 5, d: 'q' }, { s: 5, d: 'q' }, { s: 4, d: 'h' }],
       [{ s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }],
-      [{ s: 4, d: 'h' }, { s: 0, d: 'h' }],
+      [{ s: 0, d: 'w' }],
     ]},
     { id: 'this_old_man', title: 'This Old Man', meter: '4/4', measures: [
-      [{ s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }],
-      [{ s: 1, d: 'q' }, { s: 1, d: 'q' }, { s: 0, d: 'h' }],
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'h' }],
+      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'h' }],
+      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'h' }],
+      [{ s: 5, d: 'q' }, { s: 4, d: 'q' }, { s: 3, d: 'q' }, { s: 1, d: 'q' }],
+      [{ s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'h' }],
     ]},
     { id: 'ring_around_rosie', title: 'Ring Around the Rosie', meter: '4/4', measures: [
       [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'q' }],
@@ -79,7 +80,7 @@
       [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }],
       [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'h' }],
       [{ s: 1, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 2, d: 'h' }, { s: 0, d: 'h' }],
+      [{ s: 2, d: 'h' }, { s: 1, d: 'h' }],
     ]},
     { id: 'my_country_tis', title: "My Country 'Tis of Thee", meter: '3/4', measures: [
       [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
@@ -202,10 +203,9 @@
       [{ s: 0, d: 'w' }],
     ]},
     { id: 'amazing_grace', title: 'Amazing Grace', meter: '3/4', measures: [
-      [{ s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 2, d: 'q' }],
-      [{ s: 0, d: 'h' }, { s: 5, d: 'q' }],
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'q' }],
-      [{ s: 2, d: 'h' }, { s: 1, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }],
+      [{ s: 1, d: 'q' }, { s: 0, d: 'q' }, { s: 5, d: 'q' }],
+      [{ s: 4, d: 'h' }, { s: 4, d: 'q' }],
     ]},
     { id: 'ode_to_joy', title: 'Ode to Joy (Beethoven, Symphony No. 9)', meter: '4/4', measures: [
       [{ s: 2, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'q' }],

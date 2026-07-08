@@ -39,62 +39,103 @@
     return names[Math.floor(Math.random() * names.length)];
   }
 
-  // Renders one melody into `container` using VexFlow and returns the
-  // flattened, playback-ready note list plus the SVG element drawn into.
+  // Renders one melody into `container` using VexFlow, wrapping measures
+  // across multiple staff lines so it fits without horizontal scrolling,
+  // and returns the flattened, playback-ready note list plus the SVG
+  // element drawn into.
   function renderMelody(melody, keyName, container) {
     container.innerHTML = '';
     const VF = Vex.Flow;
 
-    const FIRST_WIDTH = 270;
-    const OTHER_WIDTH = 190;
-    const HEIGHT = 170;
-    const totalWidth = FIRST_WIDTH + OTHER_WIDTH * (melody.measures.length - 1) + 20;
+    const MEASURES_PER_ROW = 2;
+    const NOTE_UNIT = 32;
+    const BASE_PAD = 40;
+    const CLEF_KEY_OVERHEAD = 75;
+    const TIME_SIG_OVERHEAD = 28;
+    const ROW_HEIGHT = 130;
+    const LEFT_MARGIN = 10;
+    const TOP_MARGIN = 20;
+
+    function measureWidth(measure, isFirstInRow, isVeryFirstMeasure) {
+      let width = BASE_PAD + measure.length * NOTE_UNIT;
+      if (isFirstInRow) width += CLEF_KEY_OVERHEAD;
+      if (isVeryFirstMeasure) width += TIME_SIG_OVERHEAD;
+      return width;
+    }
+
+    const rows = [];
+    for (let i = 0; i < melody.measures.length; i += MEASURES_PER_ROW) {
+      rows.push(melody.measures.slice(i, i + MEASURES_PER_ROW));
+    }
+
+    let maxRowWidth = 0;
+    const rowWidths = rows.map((row, rowIndex) => {
+      const width = row.reduce((sum, measure, i) => {
+        const isFirstInRow = i === 0;
+        const isVeryFirstMeasure = rowIndex === 0 && i === 0;
+        return sum + measureWidth(measure, isFirstInRow, isVeryFirstMeasure);
+      }, 0);
+      maxRowWidth = Math.max(maxRowWidth, width);
+      return width;
+    });
+
+    const totalWidth = LEFT_MARGIN + maxRowWidth + 10;
+    const totalHeight = TOP_MARGIN + rows.length * ROW_HEIGHT;
 
     const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
-    renderer.resize(totalWidth, HEIGHT);
+    renderer.resize(totalWidth, totalHeight);
     const context = renderer.getContext();
 
     const [beatsNum, beatValue] = melody.meter.split('/').map(Number);
     const allNotes = [];
-    let x = 10;
 
-    melody.measures.forEach((measure, measureIndex) => {
-      const width = measureIndex === 0 ? FIRST_WIDTH : OTHER_WIDTH;
-      const stave = new VF.Stave(x, 20, width);
-      if (measureIndex === 0) {
-        stave.addClef('treble');
-        stave.addKeySignature(keyName);
-        stave.addTimeSignature(melody.meter);
-      }
-      stave.setContext(context).draw();
+    rows.forEach((row, rowIndex) => {
+      let x = LEFT_MARGIN;
+      const y = TOP_MARGIN + rowIndex * ROW_HEIGHT;
 
-      const voice = new VF.Voice({ num_beats: beatsNum, beat_value: beatValue });
-      voice.setStrict(false);
+      row.forEach((measure, i) => {
+        const isFirstInRow = i === 0;
+        const isVeryFirstMeasure = rowIndex === 0 && i === 0;
+        const width = measureWidth(measure, isFirstInRow, isVeryFirstMeasure);
 
-      const vexNotes = measure.map((n) => {
-        const isRest = n.s === null;
-        const duration = MelodyTheory.vexDuration(n.d, isRest);
-        let vexKey = 'b/4';
-        let midi = null;
-        if (!isRest) {
-          const pitch = MelodyTheory.pitchForStep(keyName, n.s);
-          vexKey = pitch.vexKey;
-          midi = pitch.midi;
+        const stave = new VF.Stave(x, y, width);
+        if (isFirstInRow) {
+          stave.addClef('treble');
+          stave.addKeySignature(keyName);
         }
-        const staveNote = new VF.StaveNote({ keys: [vexKey], duration: duration, clef: 'treble' });
-        allNotes.push({ vexNote: staveNote, midi: midi, isRest: isRest, beats: MelodyTheory.beatsForDuration(n.d) });
-        return staveNote;
+        if (isVeryFirstMeasure) {
+          stave.addTimeSignature(melody.meter);
+        }
+        stave.setContext(context).draw();
+
+        const voice = new VF.Voice({ num_beats: beatsNum, beat_value: beatValue });
+        voice.setStrict(false);
+
+        const vexNotes = measure.map((n) => {
+          const isRest = n.s === null;
+          const duration = MelodyTheory.vexDuration(n.d, isRest);
+          let vexKey = 'b/4';
+          let midi = null;
+          if (!isRest) {
+            const pitch = MelodyTheory.pitchForStep(keyName, n.s);
+            vexKey = pitch.vexKey;
+            midi = pitch.midi;
+          }
+          const staveNote = new VF.StaveNote({ keys: [vexKey], duration: duration, clef: 'treble' });
+          allNotes.push({ vexNote: staveNote, midi: midi, isRest: isRest, beats: MelodyTheory.beatsForDuration(n.d) });
+          return staveNote;
+        });
+
+        voice.addTickables(vexNotes);
+        new VF.Formatter().joinVoices([voice]).format([voice], stave.getNoteEndX() - stave.getNoteStartX() - 20);
+        voice.draw(context, stave);
+
+        VF.Beam.generateBeams(vexNotes.filter((n) => !n.isRest())).forEach((beam) => {
+          beam.setContext(context).draw();
+        });
+
+        x += width;
       });
-
-      voice.addTickables(vexNotes);
-      new VF.Formatter().joinVoices([voice]).format([voice], stave.getNoteEndX() - stave.getNoteStartX() - 20);
-      voice.draw(context, stave);
-
-      VF.Beam.generateBeams(vexNotes.filter((n) => !n.isRest())).forEach((beam) => {
-        beam.setContext(context).draw();
-      });
-
-      x += width;
     });
 
     return { allNotes: allNotes, svgEl: container.querySelector('svg') };

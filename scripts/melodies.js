@@ -243,10 +243,9 @@
       [{ s: 0, d: 'w' }],
     ]},
     { id: 'wheels_bus', title: 'The Wheels on the Bus', meter: '4/4', measures: [
-      [{ s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
-      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 2, d: '8' }, { s: 0, d: '8' }],
-      [{ s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
-      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'h' }],
+      [{ s: -3, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
+      [{ s: 2, d: 'w' }],
     ]},
     { id: 'raining_pouring', title: "It's Raining, It's Pouring", meter: '4/4', measures: [
       [{ s: 4, d: 'h' }, { s: 2, d: 'h' }],

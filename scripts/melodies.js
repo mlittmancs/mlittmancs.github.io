@@ -124,10 +124,10 @@
       [{ s: 2, d: 'h' }, { s: 0, d: 'h' }],
     ]},
     { id: 'shell_be_comin', title: "She'll Be Comin' Round the Mountain", meter: '4/4', measures: [
-      [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 2, d: 'q' }],
-      [{ s: 4, d: 'h' }, { s: 4, d: 'h' }],
-      [{ s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 2, d: 'q' }],
-      [{ s: 0, d: 'w' }],
+      [{ s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 3, d: 'q' }, { s: 3, d: 'q' }],
+      [{ s: 3, d: 'q' }, { s: 3, d: 'q' }, { s: 1, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 3, d: 'q' }, { s: 3, d: 'q' }],
+      [{ s: 3, d: 'q' }, { s: 1, d: 'q' }, { s: 0, d: 'h' }],
     ]},
     { id: 'home_on_range', title: 'Home on the Range', meter: '3/4', measures: [
       [{ s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 4, d: 'q' }],
@@ -148,10 +148,10 @@
       [{ s: 7, d: 'h' }, { s: 4, d: 'q' }],
     ]},
     { id: 'when_saints', title: 'When the Saints Go Marching In', meter: '4/4', measures: [
-      [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 4, d: 'h' }, { s: 0, d: 'h' }],
-      [{ s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 4, d: 'w' }],
+      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'q' }],
+      [{ s: 3, d: 'h' }, { s: 0, d: 'h' }],
+      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 4, d: 'q' }],
+      [{ s: 3, d: 'h' }, { s: 0, d: 'h' }],
     ]},
     { id: 'my_bonnie', title: 'My Bonnie Lies Over the Ocean', meter: '3/4', measures: [
       [{ s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 7, d: 'q' }],
@@ -196,10 +196,10 @@
       [{ s: 4, d: 'h' }, { s: 2, d: 'q' }],
     ]},
     { id: 'auld_lang_syne', title: 'Auld Lang Syne', meter: '4/4', measures: [
-      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 4, d: 'q' }],
-      [{ s: 7, d: 'h' }, { s: 5, d: 'h' }],
-      [{ s: 4, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 2, d: 'q' }],
-      [{ s: 0, d: 'w' }],
+      [{ s: 4, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 4, d: 'q' }, { s: 4, d: 'q' }],
+      [{ s: 2, d: 'h' }, { s: 0, d: 'h' }],
     ]},
     { id: 'amazing_grace', title: 'Amazing Grace', meter: '3/4', measures: [
       [{ s: 0, d: 'q' }, { s: 2, d: 'q' }, { s: 2, d: 'q' }],

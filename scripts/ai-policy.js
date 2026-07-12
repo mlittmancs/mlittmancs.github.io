@@ -25,6 +25,7 @@
 
   var objectivesListEl = document.getElementById('objectives-list');
   var statusEl = document.getElementById('status');
+  var warningsEl = document.getElementById('data-warnings');
   var introTextEl = document.getElementById('intro-text');
   var previewEl = document.getElementById('policy-preview');
   var copyBtn = document.getElementById('copy-btn');
@@ -93,6 +94,80 @@
     });
   }
 
+  // Cross-checks the three tabs against each other so a typo'd short name
+  // (e.g. "brainstorming" vs "brainstorm") is surfaced instead of silently
+  // dropping a prohibited-use link. Returns an array of human-readable
+  // warning strings; an empty array means everything lines up.
+  function validateData(allObjectives, allProhibited, allPermitted) {
+    var warnings = [];
+
+    function findDuplicates(items, tabLabel) {
+      var seen = {};
+      items.forEach(function (item) {
+        if (!item.shortName) return;
+        if (seen[item.shortName]) {
+          warnings.push('The short name "' + item.shortName + '" appears more than once in the "' +
+            tabLabel + '" tab. Only one row with that short name should exist.');
+        }
+        seen[item.shortName] = true;
+      });
+    }
+
+    findDuplicates(allProhibited, TABS.prohibited);
+    findDuplicates(allPermitted, TABS.permitted);
+    findDuplicates(allObjectives, TABS.objectives);
+
+    allProhibited.forEach(function (u) {
+      if (u.shortName && !u.use) {
+        warnings.push('Row with short name "' + u.shortName + '" in the "' + TABS.prohibited +
+          '" tab has no text in the "AI use" column, so it was skipped.');
+      }
+    });
+    allPermitted.forEach(function (u) {
+      if (u.shortName && !u.use) {
+        warnings.push('Row with short name "' + u.shortName + '" in the "' + TABS.permitted +
+          '" tab has no text in the "AI use" column, so it was skipped.');
+      }
+    });
+    allObjectives.forEach(function (o) {
+      if (o.shortName && !o.text) {
+        warnings.push('Row with short name "' + o.shortName + '" in the "' + TABS.objectives +
+          '" tab has no text in the "learning objective" column, so it was skipped.');
+      }
+    });
+
+    var prohibitedShortNames = {};
+    allProhibited.forEach(function (u) { if (u.shortName) prohibitedShortNames[u.shortName] = true; });
+
+    allObjectives.forEach(function (o) {
+      o.prohibitions.forEach(function (token) {
+        if (!prohibitedShortNames[token]) {
+          warnings.push('Learning objective "' + (o.shortName || o.text) + '" lists prohibited-use short name "' +
+            token + '" in its "prohibitions" column, but no row in the "' + TABS.prohibited +
+            '" tab has that short name. Check both tabs for a typo — this prohibition is currently being dropped.');
+        }
+      });
+    });
+
+    return warnings;
+  }
+
+  function renderWarnings(warnings) {
+    if (!warnings.length) {
+      warningsEl.innerHTML = '';
+      warningsEl.className = 'data-warnings hidden';
+      return;
+    }
+    warningsEl.className = 'data-warnings';
+    var html = '<p><strong>' + warnings.length + ' issue' + (warnings.length === 1 ? '' : 's') +
+      ' found in the spreadsheet:</strong></p><ul>';
+    warnings.forEach(function (w) {
+      html += '<li>' + escapeHtml(w) + '</li>';
+    });
+    html += '</ul>';
+    warningsEl.innerHTML = html;
+  }
+
   function loadData() {
     return Promise.all([
       fetchTab(TABS.objectives),
@@ -103,20 +178,24 @@
       var prohibitedRows = results[1];
       var permittedRows = results[2];
 
-      prohibitedUses = prohibitedRows.map(function (r) {
+      var allProhibited = prohibitedRows.map(function (r) {
         return { shortName: normalize(r[0]), use: (r[1] || '').trim(), rationale: (r[2] || '').trim() };
-      }).filter(function (u) { return u.use; });
-
-      permittedUses = permittedRows.map(function (r) {
+      });
+      var allPermitted = permittedRows.map(function (r) {
         return { shortName: normalize(r[0]), use: (r[1] || '').trim() };
-      }).filter(function (u) { return u.use; });
-
-      var objectives = objectiveRows.map(function (r) {
+      });
+      var allObjectives = objectiveRows.map(function (r) {
         var prohibitions = (r[2] || '').split(',')
           .map(normalize)
           .filter(function (s) { return s; });
-        return { text: (r[1] || '').trim(), prohibitions: prohibitions };
-      }).filter(function (o) { return o.text; });
+        return { shortName: normalize(r[0]), text: (r[1] || '').trim(), prohibitions: prohibitions };
+      });
+
+      renderWarnings(validateData(allObjectives, allProhibited, allPermitted));
+
+      prohibitedUses = allProhibited.filter(function (u) { return u.use; });
+      permittedUses = allPermitted.filter(function (u) { return u.use; });
+      var objectives = allObjectives.filter(function (o) { return o.text; });
 
       renderObjectives(objectives);
     });

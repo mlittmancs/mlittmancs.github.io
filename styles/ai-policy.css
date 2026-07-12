@@ -1,0 +1,208 @@
+/* Styles for the AI Use Policy Builder */
+
+body {
+    width: 900px;
+    max-width: 95vw;
+}
+
+.policy-app {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.intro {
+    color: #333;
+}
+
+.status {
+    text-align: center;
+    font-style: italic;
+    color: #333;
+}
+
+.status.error {
+    font-style: normal;
+    color: #7a0000;
+    background-color: #ffe5e5;
+    border: 1px solid #cc0000;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
+    color: #00539F;
+}
+
+.section-help {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.section-help.small {
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.list-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.list-controls button,
+#add-objective-btn,
+#copy-btn {
+    padding: 8px 18px;
+    font-size: 14px;
+}
+
+.objectives-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.objective-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid #eee;
+}
+
+.objective-item label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.objective-item input[type="checkbox"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.remove-objective-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.remove-objective-btn:hover {
+    color: #cc0000;
+}
+
+.add-objective {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.add-objective label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+}
+
+.add-objective-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+#custom-objective-input {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 2px solid #00539F;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#intro-text {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    border: 2px solid #00539F;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.copy-feedback {
+    font-size: 14px;
+}
+
+.copy-feedback.success {
+    color: #28a745;
+}
+
+.copy-feedback.error {
+    color: #cc0000;
+}
+
+.policy-preview {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    padding: 15px 20px;
+    background-color: #fdfdfd;
+    color: #222;
+    overflow-x: auto;
+}
+
+.policy-preview ol {
+    padding-left: 20px;
+}
+
+.policy-preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.policy-preview th,
+.policy-preview td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.policy-preview th {
+    background-color: #00539F;
+    color: #fff;
+}
+
+.policy-preview tr:nth-child(even) td {
+    background-color: #f2f6fb;
+}
+
+.back-link {
+    text-align: center;
+}

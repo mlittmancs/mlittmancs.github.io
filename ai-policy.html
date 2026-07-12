@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AI Use Policy Builder</title>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="styles/ai-policy.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <h1>AI Use Policy Builder</h1>
+
+    <div class="policy-app">
+      <p class="intro">
+        Build a first-cut generative-AI use policy for your class. Check the
+        learning objectives that are core to your course, and this tool will
+        assemble a passage listing prohibited and permitted AI uses that you
+        can copy into your syllabus. The learning objectives and their
+        associated AI uses are maintained in a shared spreadsheet, so the
+        options below may be updated over time.
+      </p>
+
+      <p id="status" class="status">Loading learning objectives&hellip;</p>
+
+      <section class="card">
+        <h2>1. Select your core learning objectives</h2>
+        <p class="section-help">
+          Check any objective that is central to this class. Unchecked
+          objectives are left out of the generated policy entirely.
+        </p>
+
+        <div class="list-controls">
+          <button id="select-all-btn" type="button">Select all</button>
+          <button id="clear-all-btn" type="button">Clear all</button>
+        </div>
+
+        <ul id="objectives-list" class="objectives-list"></ul>
+
+        <div class="add-objective">
+          <label for="custom-objective-input">Add a learning objective of your own</label>
+          <p class="section-help small">
+            Custom objectives are added to the numbered list below, but
+            (since they're not in the spreadsheet) they won't automatically
+            pull in any prohibited AI uses &mdash; edit the generated table
+            by hand if one applies.
+          </p>
+          <div class="add-objective-row">
+            <input type="text" id="custom-objective-input" placeholder="e.g., Debugging code independently" autocomplete="off">
+            <button id="add-objective-btn" type="button">Add</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. Introductory note</h2>
+        <p class="section-help">
+          This text appears at the top of the generated passage. Edit it to
+          fit your course.
+        </p>
+        <textarea id="intro-text" rows="4"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>3. Your policy passage</h2>
+        <div class="preview-header">
+          <button id="copy-btn" type="button">Copy policy text</button>
+          <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
+        </div>
+        <div id="policy-preview" class="policy-preview" aria-live="polite"></div>
+      </section>
+
+      <p class="back-link"><a href="index.html">&larr; Back to home</a></p>
+    </div>
+
+    <script src="scripts/ai-policy.js"></script>
+  </body>
+</html>

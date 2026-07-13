@@ -38,8 +38,18 @@ body {
 
 h1 {
     text-align: center;
-    margin: 0 0 14px;
+    margin: 0 0 4px;
     color: var(--brown);
+}
+
+.byline {
+    text-align: center;
+    margin: 0 0 18px;
+    color: var(--brown-red);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
 }
 
 .subtitle {

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Policy Explorer for Faculty</title>
+    <link rel="stylesheet" href="styles/ai-policy-explorer.css">
+</head>
+<body>
+    <div id="page">
+        <header>
+            <h1>AI Policy Explorer for Faculty</h1>
+            <p class="subtitle">
+                Browse prohibited and allowed generative-AI uses tied to course learning outcomes, then build a
+                policy you can paste into your syllabus. Data is loaded live from the
+                <a id="sheet-link" href="#" target="_blank" rel="noopener">source Google Sheet</a>
+                so it always reflects the latest version.
+            </p>
+        </header>
+
+        <div id="status-banner" class="status-banner" hidden></div>
+
+        <main id="app" hidden>
+            <div class="columns">
+                <div class="main-col">
+                    <section class="panel" aria-labelledby="prohibited-heading">
+                        <h2 id="prohibited-heading">Prohibited GenAI Uses</h2>
+                        <p class="panel-help">Click a prohibited use to see the learning outcomes it applies to, and check off any that apply to your course.</p>
+                        <ul id="prohibited-list" class="pill-list"></ul>
+                    </section>
+
+                    <section class="panel" aria-labelledby="allowed-heading">
+                        <h2 id="allowed-heading">Allowed Uses to Support Learning</h2>
+                        <p class="panel-help">Check any use profiles you want to permit in your course. Each includes the guardrail needed to protect academic integrity.</p>
+                        <ul id="allowed-list" class="card-list"></ul>
+                    </section>
+                </div>
+
+                <aside class="side-col">
+                    <div id="collection-box" class="panel collection-box">
+                        <h2>Your Course AI Policy</h2>
+                        <p class="panel-help">Selections you make on the left are collected here for copying into your syllabus.</p>
+
+                        <h3>Prohibited Uses <span id="prohibited-count" class="count-badge">0</span></h3>
+                        <ul id="selected-prohibited" class="selection-list empty">
+                            <li class="empty-msg">No learning outcomes selected yet.</li>
+                        </ul>
+
+                        <h3>Allowed Uses <span id="allowed-count" class="count-badge">0</span></h3>
+                        <ul id="selected-allowed" class="selection-list empty">
+                            <li class="empty-msg">No allowed uses selected yet.</li>
+                        </ul>
+
+                        <div class="collection-actions">
+                            <button type="button" id="copy-btn">Copy to Clipboard</button>
+                            <button type="button" id="clear-btn" class="secondary-btn">Clear All</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <p class="back-link"><a href="index.html">&larr; Back to home</a></p>
+    </div>
+
+    <div id="outcome-modal" class="modal-overlay" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <button type="button" id="modal-close" class="modal-close" aria-label="Close">&times;</button>
+            <h2 id="modal-title">Prohibited use</h2>
+            <p class="panel-help">Check any example learning outcomes below that apply to your course to add them to your policy list.</p>
+            <ul id="modal-outcome-list" class="outcome-list"></ul>
+        </div>
+    </div>
+
+    <script src="scripts/ai-policy-explorer-fallback-data.js"></script>
+    <script src="scripts/ai-policy-explorer.js"></script>
+</body>
+</html>

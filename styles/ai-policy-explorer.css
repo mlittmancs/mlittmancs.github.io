@@ -1,3 +1,17 @@
+:root {
+    /* Brown University brand palette */
+    --brown: #4e3629;
+    --brown-red: #c00404;
+    --brown-red-dark: #8f0303;
+    --brown-red-tint: #fbe8e8;
+    --brown-red-border: #eec0c0;
+    --brown-gold: #ffc72c;
+    --brown-gold-tint: #fff6d9;
+    --brown-gold-border: #eed48c;
+    --brown-gold-text: #6b4a12;
+    --brown-gray: #98a4ae;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -5,7 +19,7 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background-color: #1f2937;
+    background-color: var(--brown);
     font-family: 'Segoe UI', 'Open Sans', sans-serif;
     display: flex;
     justify-content: center;
@@ -25,7 +39,7 @@ body {
 h1 {
     text-align: center;
     margin: 0 0 10px;
-    color: #1f2937;
+    color: var(--brown);
 }
 
 .subtitle {
@@ -38,7 +52,7 @@ h1 {
 }
 
 .subtitle a {
-    color: #00539F;
+    color: var(--brown-red);
 }
 
 .status-banner {
@@ -51,15 +65,15 @@ h1 {
 }
 
 .status-banner.info {
-    background-color: #eef4fb;
-    color: #1f4e79;
-    border: 1px solid #cfe0f2;
+    background-color: #f2ece7;
+    color: var(--brown);
+    border: 1px solid #ddccc2;
 }
 
 .status-banner.error {
-    background-color: #fdecea;
-    color: #7a1f1f;
-    border: 1px solid #f3c2c2;
+    background-color: var(--brown-red-tint);
+    color: var(--brown-red-dark);
+    border: 1px solid var(--brown-red-border);
 }
 
 .columns {
@@ -91,7 +105,7 @@ h1 {
 .panel h2 {
     margin: 0 0 6px;
     font-size: 19px;
-    color: #1f2937;
+    color: var(--brown);
 }
 
 .panel-help {
@@ -126,8 +140,8 @@ h1 {
 
 .pill-item button:hover,
 .pill-item button:focus-visible {
-    background-color: #eef4fb;
-    border-color: #00539F;
+    background-color: var(--brown-red-tint);
+    border-color: var(--brown-red);
 }
 
 .card-list {
@@ -155,6 +169,7 @@ h1 {
     height: 17px;
     flex: none;
     cursor: pointer;
+    accent-color: var(--brown-red);
 }
 
 .card-body label {
@@ -166,7 +181,7 @@ h1 {
     display: block;
     font-weight: 600;
     font-size: 14.5px;
-    color: #1f2937;
+    color: var(--brown);
     margin: 0 0 4px;
 }
 
@@ -181,16 +196,16 @@ h1 {
 .card-guardrail {
     font-size: 12.5px;
     line-height: 1.5;
-    color: #7a4a00;
-    background-color: #fff6e5;
-    border: 1px solid #f1dfb3;
+    color: var(--brown-gold-text);
+    background-color: var(--brown-gold-tint);
+    border: 1px solid var(--brown-gold-border);
     border-radius: 6px;
     padding: 6px 9px;
     margin: 0;
 }
 
 .card-guardrail strong {
-    color: #5c3800;
+    color: var(--brown);
 }
 
 .collection-box h2 {
@@ -209,7 +224,7 @@ h1 {
 }
 
 .count-badge {
-    background-color: #00539F;
+    background-color: var(--brown-red);
     color: #fff;
     font-size: 11px;
     font-weight: 700;
@@ -253,7 +268,7 @@ h1 {
 
 .selection-item .item-title {
     font-weight: 600;
-    color: #1f2937;
+    color: var(--brown);
     display: block;
 }
 
@@ -281,7 +296,7 @@ h1 {
 }
 
 .remove-btn:hover {
-    background-color: #dc3545;
+    background-color: var(--brown-red);
     color: #fff;
 }
 
@@ -296,7 +311,7 @@ h1 {
     padding: 10px 16px;
     font-size: 14px;
     font-weight: 600;
-    background-color: #00539F;
+    background-color: var(--brown-red);
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -304,11 +319,11 @@ h1 {
 }
 
 #copy-btn:hover {
-    background-color: #003f7a;
+    background-color: var(--brown-red-dark);
 }
 
 #copy-btn:disabled {
-    background-color: #9fb8cf;
+    background-color: #d3a3a3;
     cursor: not-allowed;
 }
 
@@ -335,7 +350,7 @@ h1 {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(78, 54, 41, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -381,7 +396,7 @@ h1 {
 #modal-title {
     margin: 0 8px 6px 0;
     font-size: 18px;
-    color: #1f2937;
+    color: var(--brown);
     padding-right: 30px;
 }
 
@@ -410,6 +425,7 @@ h1 {
     height: 17px;
     flex: none;
     cursor: pointer;
+    accent-color: var(--brown-red);
 }
 
 .outcome-item label {
@@ -442,7 +458,7 @@ h1 {
 }
 
 .back-link a {
-    color: #00539F;
+    color: var(--brown-red);
     text-decoration: none;
 }
 

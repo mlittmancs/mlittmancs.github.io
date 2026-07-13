@@ -5,18 +5,16 @@
     var SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/edit?gid=53592962#gid=53592962';
 
     var TAB_PROHIBITED = 'Consolidated Prohibited Uses';
-    var TAB_OUTCOMES = 'Outcomes with Prohibited Uses';
     var TAB_ALLOWED = 'Allowed Uses to Support Learning';
 
-    var STORAGE_KEY = 'aiPolicyExplorer.selections.v1';
+    var STORAGE_KEY = 'aiPolicyExplorer.selections.v2';
     var JSONP_TIMEOUT_MS = 12000;
 
     var state = {
         prohibited: [],   // array of strings
-        outcomes: [],      // array of {knowledgeArea, courseLevel, bloom, fink, outcome, prohibitedUse, key}
         allowed: [],        // array of {number, profile, supports, guardrail, key}
-        selectedOutcomes: {}, // key -> outcome object
-        selectedAllowed: {}   // key -> allowed object
+        selectedProhibited: {}, // use text -> use text
+        selectedAllowed: {}     // key -> allowed object
     };
 
     var callbackCounter = 0;
@@ -91,34 +89,6 @@
         return out;
     }
 
-    function parseOutcomesTable(table) {
-        var cols = table.cols;
-        var idx = {
-            knowledgeArea: findColumnIndex(cols, 'knowledge area'),
-            courseLevel: findColumnIndex(cols, 'course level'),
-            bloom: findColumnIndex(cols, 'bloom'),
-            fink: findColumnIndex(cols, 'fink'),
-            outcome: findColumnIndex(cols, 'example learning outcome'),
-            prohibitedUse: findColumnIndex(cols, 'prohibited genai use')
-        };
-        var out = [];
-        (table.rows || []).forEach(function (row) {
-            if (!row.c) { return; }
-            var item = {
-                knowledgeArea: cellValue(row, idx.knowledgeArea),
-                courseLevel: cellValue(row, idx.courseLevel),
-                bloom: cellValue(row, idx.bloom),
-                fink: cellValue(row, idx.fink),
-                outcome: cellValue(row, idx.outcome),
-                prohibitedUse: cellValue(row, idx.prohibitedUse)
-            };
-            if (!item.outcome && !item.prohibitedUse) { return; }
-            item.key = item.outcome + '||' + item.prohibitedUse;
-            out.push(item);
-        });
-        return out;
-    }
-
     function parseAllowedTable(table) {
         var cols = table.cols;
         var idx = {
@@ -146,14 +116,12 @@
     function loadLiveData() {
         return Promise.all([
             jsonpFetchSheet(TAB_PROHIBITED),
-            jsonpFetchSheet(TAB_OUTCOMES),
             jsonpFetchSheet(TAB_ALLOWED)
         ]).then(function (results) {
             state.prohibited = parseProhibitedTable(results[0].table);
-            state.outcomes = parseOutcomesTable(results[1].table);
-            state.allowed = parseAllowedTable(results[2].table);
+            state.allowed = parseAllowedTable(results[1].table);
 
-            if (!state.prohibited.length || !state.outcomes.length || !state.allowed.length) {
+            if (!state.prohibited.length || !state.allowed.length) {
                 throw new Error('Sheet loaded but expected columns/tabs were not found.');
             }
         });
@@ -162,17 +130,6 @@
     function loadFallbackSnapshot() {
         var snap = window.AI_POLICY_FALLBACK_SNAPSHOT;
         state.prohibited = snap.prohibited.slice();
-        state.outcomes = snap.outcomes.map(function (o) {
-            return {
-                knowledgeArea: o.knowledgeArea,
-                courseLevel: o.courseLevel,
-                bloom: o.bloom,
-                fink: o.fink,
-                outcome: o.outcome,
-                prohibitedUse: o.prohibitedUse,
-                key: o.outcome + '||' + o.prohibitedUse
-            };
-        });
         state.allowed = snap.allowed.map(function (a) {
             return {
                 number: a.number,
@@ -189,7 +146,7 @@
     function saveSelections() {
         try {
             var payload = {
-                outcomeKeys: Object.keys(state.selectedOutcomes),
+                prohibitedKeys: Object.keys(state.selectedProhibited),
                 allowedKeys: Object.keys(state.selectedAllowed)
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -207,10 +164,10 @@
             payload = JSON.parse(raw);
         } catch (e) { return; }
 
-        var outcomeByKey = {};
-        state.outcomes.forEach(function (o) { outcomeByKey[o.key] = o; });
-        (payload.outcomeKeys || []).forEach(function (k) {
-            if (outcomeByKey[k]) { state.selectedOutcomes[k] = outcomeByKey[k]; }
+        var prohibitedSet = {};
+        state.prohibited.forEach(function (p) { prohibitedSet[p] = p; });
+        (payload.prohibitedKeys || []).forEach(function (k) {
+            if (prohibitedSet[k]) { state.selectedProhibited[k] = k; }
         });
 
         var allowedByKey = {};
@@ -236,10 +193,6 @@
         el.allowedCount = document.getElementById('allowed-count');
         el.copyBtn = document.getElementById('copy-btn');
         el.clearBtn = document.getElementById('clear-btn');
-        el.modalOverlay = document.getElementById('outcome-modal');
-        el.modalTitle = document.getElementById('modal-title');
-        el.modalOutcomeList = document.getElementById('modal-outcome-list');
-        el.modalClose = document.getElementById('modal-close');
     }
 
     function showStatus(message, type) {
@@ -258,16 +211,46 @@
         return div.innerHTML;
     }
 
+    function slugify(str) {
+        return String(str).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60);
+    }
+
     function renderProhibitedList() {
         el.prohibitedList.innerHTML = '';
         state.prohibited.forEach(function (use) {
             var li = document.createElement('li');
-            li.className = 'pill-item';
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.textContent = use;
-            btn.addEventListener('click', function () { openOutcomeModal(use); });
-            li.appendChild(btn);
+            li.className = 'card-item';
+
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            var checkboxId = 'prohibited-cb-' + slugify(use);
+            checkbox.id = checkboxId;
+            checkbox.checked = !!state.selectedProhibited[use];
+            checkbox.addEventListener('change', function () {
+                if (checkbox.checked) {
+                    state.selectedProhibited[use] = use;
+                } else {
+                    delete state.selectedProhibited[use];
+                }
+                saveSelections();
+                renderCollectionBox();
+            });
+
+            var body = document.createElement('div');
+            body.className = 'card-body';
+
+            var label = document.createElement('label');
+            label.setAttribute('for', checkboxId);
+
+            var text = document.createElement('span');
+            text.className = 'card-text';
+            text.textContent = use;
+
+            label.appendChild(text);
+            body.appendChild(label);
+
+            li.appendChild(checkbox);
+            li.appendChild(body);
             el.prohibitedList.appendChild(li);
         });
     }
@@ -323,98 +306,30 @@
         });
     }
 
-    function slugify(str) {
-        return String(str).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60);
-    }
-
-    function openOutcomeModal(prohibitedUse) {
-        el.modalTitle.textContent = prohibitedUse;
-        el.modalOutcomeList.innerHTML = '';
-
-        var matches = state.outcomes.filter(function (o) { return o.prohibitedUse === prohibitedUse; });
-
-        if (!matches.length) {
-            var none = document.createElement('li');
-            none.className = 'no-results';
-            none.textContent = 'No example learning outcomes found for this use.';
-            el.modalOutcomeList.appendChild(none);
-        } else {
-            matches.forEach(function (o) {
-                var li = document.createElement('li');
-                li.className = 'outcome-item';
-
-                var checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                var checkboxId = 'outcome-cb-' + slugify(o.key);
-                checkbox.id = checkboxId;
-                checkbox.checked = !!state.selectedOutcomes[o.key];
-                checkbox.addEventListener('change', function () {
-                    if (checkbox.checked) {
-                        state.selectedOutcomes[o.key] = o;
-                    } else {
-                        delete state.selectedOutcomes[o.key];
-                    }
-                    saveSelections();
-                    renderCollectionBox();
-                });
-
-                var label = document.createElement('label');
-                label.setAttribute('for', checkboxId);
-
-                var text = document.createElement('span');
-                text.className = 'outcome-text';
-                text.textContent = o.outcome;
-
-                var meta = document.createElement('span');
-                meta.className = 'outcome-meta';
-                meta.textContent = [o.knowledgeArea, o.courseLevel, o.bloom, o.fink].filter(Boolean).join(' • ');
-
-                label.appendChild(text);
-                label.appendChild(meta);
-
-                li.appendChild(checkbox);
-                li.appendChild(label);
-                el.modalOutcomeList.appendChild(li);
-            });
-        }
-
-        el.modalOverlay.hidden = false;
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        el.modalOverlay.hidden = true;
-        document.body.style.overflow = '';
-    }
-
     function renderCollectionBox() {
-        var outcomeKeys = Object.keys(state.selectedOutcomes);
+        var prohibitedKeys = Object.keys(state.selectedProhibited);
         var allowedKeys = Object.keys(state.selectedAllowed);
 
-        el.prohibitedCount.textContent = String(outcomeKeys.length);
+        el.prohibitedCount.textContent = String(prohibitedKeys.length);
         el.allowedCount.textContent = String(allowedKeys.length);
 
         el.selectedProhibited.innerHTML = '';
-        if (!outcomeKeys.length) {
+        if (!prohibitedKeys.length) {
             el.selectedProhibited.className = 'selection-list empty';
             var emptyLi = document.createElement('li');
             emptyLi.className = 'empty-msg';
-            emptyLi.textContent = 'No learning outcomes selected yet.';
+            emptyLi.textContent = 'No prohibited uses selected yet.';
             el.selectedProhibited.appendChild(emptyLi);
         } else {
             el.selectedProhibited.className = 'selection-list';
-            outcomeKeys.forEach(function (key) {
-                var o = state.selectedOutcomes[key];
+            prohibitedKeys.forEach(function (key) {
+                var use = state.selectedProhibited[key];
                 var li = document.createElement('li');
                 li.className = 'selection-item';
 
                 var title = document.createElement('span');
                 title.className = 'item-title';
-                title.textContent = o.outcome;
-
-                var meta = document.createElement('span');
-                meta.className = 'item-meta';
-                meta.textContent = 'Prohibited: ' + o.prohibitedUse;
+                title.textContent = use;
 
                 var removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
@@ -422,13 +337,12 @@
                 removeBtn.innerHTML = '&times;';
                 removeBtn.setAttribute('aria-label', 'Remove');
                 removeBtn.addEventListener('click', function () {
-                    delete state.selectedOutcomes[key];
+                    delete state.selectedProhibited[key];
                     saveSelections();
                     renderCollectionBox();
                 });
 
                 li.appendChild(title);
-                li.appendChild(meta);
                 li.appendChild(removeBtn);
                 el.selectedProhibited.appendChild(li);
             });
@@ -474,13 +388,16 @@
             });
         }
 
-        // keep checkbox states in sync everywhere they might be visible
         syncCheckboxes();
 
-        el.copyBtn.disabled = (outcomeKeys.length + allowedKeys.length) === 0;
+        el.copyBtn.disabled = (prohibitedKeys.length + allowedKeys.length) === 0;
     }
 
     function syncCheckboxes() {
+        Array.prototype.forEach.call(el.prohibitedList.querySelectorAll('input[type="checkbox"]'), function (cb, i) {
+            var use = state.prohibited[i];
+            if (use !== undefined) { cb.checked = !!state.selectedProhibited[use]; }
+        });
         Array.prototype.forEach.call(el.allowedList.querySelectorAll('input[type="checkbox"]'), function (cb, i) {
             var item = state.allowed[i];
             if (item) { cb.checked = !!state.selectedAllowed[item.key]; }
@@ -488,37 +405,39 @@
     }
 
     function buildClipboardText() {
+        var prohibitedKeys = Object.keys(state.selectedProhibited);
+        var allowedKeys = Object.keys(state.selectedAllowed);
+
+        if (!prohibitedKeys.length && !allowedKeys.length) {
+            return '';
+        }
+
         var lines = [];
         lines.push('AI Use Policy for This Course');
         lines.push('');
+        lines.push('Many students are looking for ways to enhance their learning with GenAI tools. At the same time, many uses of GenAI can undermine students’ learning and instructors’ ability to assess students’ learning and give feedback for growth. In this course, the following guidelines are meant to clarify what uses are detrimental to student learning and which may be supportive.');
 
-        var outcomeKeys = Object.keys(state.selectedOutcomes);
-        if (outcomeKeys.length) {
-            lines.push('PROHIBITED USES OF GENERATIVE AI');
-            lines.push('The following uses of generative AI are not permitted for the associated learning outcomes in this course:');
-            outcomeKeys.forEach(function (key) {
-                var o = state.selectedOutcomes[key];
-                lines.push('- Learning outcome: ' + o.outcome);
-                lines.push('  Prohibited use: ' + o.prohibitedUse);
-            });
+        if (prohibitedKeys.length) {
             lines.push('');
+            lines.push('PROHIBITED USES OF GENERATIVE AI');
+            lines.push('Based on the learning outcomes, assessments and learning activities of this course, the following uses of generative AI are not permitted unless otherwise specified on an assignment:');
+            prohibitedKeys.forEach(function (key) {
+                lines.push('● ' + state.selectedProhibited[key]);
+            });
         }
 
-        var allowedKeys = Object.keys(state.selectedAllowed);
         if (allowedKeys.length) {
+            lines.push('');
             lines.push('PERMITTED USES OF GENERATIVE AI (WITH GUARDRAILS)');
-            lines.push('The following uses of generative AI are permitted in this course, subject to the stated guardrails:');
+            lines.push('The following uses of generative AI are permitted in this course. Given that GenAI tools can often hallucinate or produce incorrect information, students are responsible for double-checking all AI output.');
             allowedKeys.forEach(function (key) {
                 var a = state.selectedAllowed[key];
-                lines.push('- ' + a.profile + ': ' + a.supports);
-                lines.push('  Guardrail: ' + a.guardrail);
+                lines.push('● ' + a.profile + ': ' + a.supports + ' ' + a.guardrail);
             });
-            lines.push('');
         }
 
-        if (!outcomeKeys.length && !allowedKeys.length) {
-            return '';
-        }
+        lines.push('');
+        lines.push('Students should reach out to the course instructor(s) if they have questions about this policy. If a GenAI use case not listed here may be supportive for your learning, check with the instructor first.');
 
         return lines.join('\n').trim() + '\n';
     }
@@ -561,22 +480,15 @@
     }
 
     function handleClearAll() {
-        if (!Object.keys(state.selectedOutcomes).length && !Object.keys(state.selectedAllowed).length) { return; }
+        if (!Object.keys(state.selectedProhibited).length && !Object.keys(state.selectedAllowed).length) { return; }
         if (!window.confirm('Clear all selected prohibited and allowed uses from your policy list?')) { return; }
-        state.selectedOutcomes = {};
+        state.selectedProhibited = {};
         state.selectedAllowed = {};
         saveSelections();
         renderCollectionBox();
     }
 
     function attachStaticHandlers() {
-        el.modalClose.addEventListener('click', closeModal);
-        el.modalOverlay.addEventListener('click', function (evt) {
-            if (evt.target === el.modalOverlay) { closeModal(); }
-        });
-        document.addEventListener('keydown', function (evt) {
-            if (evt.key === 'Escape' && !el.modalOverlay.hidden) { closeModal(); }
-        });
         el.copyBtn.addEventListener('click', handleCopy);
         el.clearBtn.addEventListener('click', handleClearAll);
         el.sheetLink.href = SHEET_EDIT_URL;

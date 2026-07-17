@@ -1,6 +1,7 @@
-// Snapshot captured 2026-07-13 from the source spreadsheet, used only if the live Google Sheet cannot be reached.
+// Snapshot captured 2026-07-17 from the source spreadsheet, used only if the live Google Sheet cannot be reached.
 window.AI_POLICY_FALLBACK_SNAPSHOT = {
   "prohibited": [
+    "Students are expected not to use GenAI tools for any work in this course, apart from those tools that are so embedded in the applications or systems they use (such as spellcheck or Google search) that cannot be avoided. Optional embedded AI Assistants should not be used for course learning activities and assignments (e.g., revising documents, summarizing readings or conducting literature searches).",
     "Using GenAI to draft explanations, definitions, or comparisons of core theoretical concepts.",
     "Using GenAI to perform calculations, run simulations, or analyze raw datasets without manual verification.",
     "Using GenAI to synthesize theories or establish connections between disparate concepts.",
@@ -14,7 +15,10 @@ window.AI_POLICY_FALLBACK_SNAPSHOT = {
     "Using GenAI to identify academic databases, construct search queries, or build literature matrices.",
     "Using GenAI to design artistic assets, theatrical blocking, or choreograph performances.",
     "Using GenAI to completely generate creative projects or override human artistic agency.",
-    "Using GenAI to translate text, draft compositions, or correct grammatical errors in the target language."
+    "Using GenAI to translate text, draft compositions, or correct grammatical errors in the target language.",
+    "Using GenAI to design, debug, and develop computer programs.",
+    "Using GenAI to take notes during lecture or group meetings.",
+    "Permitted GenAI use varies by assignment in this course with specific guidelines. Unless a specific GenAI use is explicitly permitted, students should consult with me before engaging in this kind of GenAI usage."
   ],
   "allowed": [
     {
@@ -105,7 +109,7 @@ window.AI_POLICY_FALLBACK_SNAPSHOT = {
       "number": 15.0,
       "profile": "Prompt-Engineering Target",
       "supports": "Serves as an environment to test how different prompt choices yield variable analytical outputs.",
-      "guardrail": "The focus of assessment must be the student\u2019s evaluation of the prompt-to-output relationship."
+      "guardrail": "The focus of assessment must be the student’s evaluation of the prompt-to-output relationship."
     },
     {
       "number": 16.0,
@@ -131,5 +135,12 @@ window.AI_POLICY_FALLBACK_SNAPSHOT = {
       "supports": "Suggests advanced database search strings, Boolean operator layouts, or technical query parameters.",
       "guardrail": "The student must independently decide which databases to trust and evaluate the returned literature."
     }
-  ]
+  ],
+  "language": {
+    "title": "AI Use Policy for This Course",
+    "intro": "Many students are looking for ways to enhance their learning with GenAI tools. At the same time, many uses of GenAI can undermine students’ learning and instructors’ ability to assess students’ learning and give feedback for growth. In this course, the following guidelines are meant to clarify what uses are detrimental to student learning and which may be supportive.",
+    "prohibit": "Based on the learning outcomes, assessments and learning activities of this course, the following uses of generative AI are not permitted unless otherwise specified on an assignment:",
+    "permit": "The following uses of generative AI are permitted in this course. Given that GenAI tools can often hallucinate or produce incorrect information, students are responsible for double-checking all AI output.",
+    "conclusion": "Students should reach out to the course instructor(s) if they have questions about this policy. If a GenAI use case not listed here may be supportive for your learning, check with the instructor first."
+  }
 };

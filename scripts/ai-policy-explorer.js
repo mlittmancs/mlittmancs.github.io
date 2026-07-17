@@ -46,6 +46,12 @@
             window[cbName] = function (data) {
                 if (finished) { return; }
                 cleanup();
+                if (!data || data.status === 'error') {
+                    var detail = (data && data.errors && data.errors[0] &&
+                        (data.errors[0].detailed_message || data.errors[0].message)) || 'unknown error';
+                    reject(new Error('Sheet tab "' + sheetName + '" returned an error (' + detail + ').'));
+                    return;
+                }
                 resolve(data);
             };
 

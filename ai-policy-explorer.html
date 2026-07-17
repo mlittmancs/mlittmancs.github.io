@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Policy Explorer for Faculty</title>
-    <link rel="stylesheet" href="styles/ai-policy-explorer.css">
+    <link rel="stylesheet" href="styles/ai-policy-explorer.css?v=2">
 </head>
 <body>
     <div id="page">
@@ -66,7 +66,8 @@
         <p class="back-link"><a href="index.html">&larr; Back to home</a></p>
     </div>
 
-    <script src="scripts/ai-policy-explorer-fallback-data.js"></script>
-    <script src="scripts/ai-policy-explorer.js"></script>
+    <!-- bump ?v= on every deploy that touches these files, so browsers don't serve a stale cached copy -->
+    <script src="scripts/ai-policy-explorer-fallback-data.js?v=2"></script>
+    <script src="scripts/ai-policy-explorer.js?v=2"></script>
 </body>
 </html>

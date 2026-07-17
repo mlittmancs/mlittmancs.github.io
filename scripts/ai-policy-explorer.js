@@ -6,6 +6,9 @@
 
     var TAB_PROHIBITED = 'Consolidated Prohibited Uses';
     var TAB_ALLOWED = 'Allowed Uses to Support Learning';
+    var TAB_LANGUAGE = 'Language for document';
+
+    var LANGUAGE_KEYS = ['title', 'intro', 'prohibit', 'permit', 'conclusion'];
 
     var STORAGE_KEY = 'aiPolicyExplorer.selections.v2';
     var JSONP_TIMEOUT_MS = 12000;
@@ -13,6 +16,7 @@
     var state = {
         prohibited: [],   // array of strings
         allowed: [],        // array of {number, profile, supports, guardrail, key}
+        language: {},        // content label -> text, e.g. { title, intro, prohibit, permit, conclusion }
         selectedProhibited: {}, // use text -> use text
         selectedAllowed: {}     // key -> allowed object
     };
@@ -113,15 +117,38 @@
         return out;
     }
 
+    function parseLanguageTable(table) {
+        var cols = table.cols;
+        var idx = {
+            label: findColumnIndex(cols, 'content'),
+            text: findColumnIndex(cols, 'text')
+        };
+        var out = {};
+        (table.rows || []).forEach(function (row) {
+            if (!row.c) { return; }
+            var label = cellValue(row, idx.label).toLowerCase();
+            var text = cellValue(row, idx.text);
+            if (!label) { return; }
+            out[label] = text;
+        });
+        return out;
+    }
+
+    function hasAllLanguageKeys(language) {
+        return LANGUAGE_KEYS.every(function (key) { return !!language[key]; });
+    }
+
     function loadLiveData() {
         return Promise.all([
             jsonpFetchSheet(TAB_PROHIBITED),
-            jsonpFetchSheet(TAB_ALLOWED)
+            jsonpFetchSheet(TAB_ALLOWED),
+            jsonpFetchSheet(TAB_LANGUAGE)
         ]).then(function (results) {
             state.prohibited = parseProhibitedTable(results[0].table);
             state.allowed = parseAllowedTable(results[1].table);
+            state.language = parseLanguageTable(results[2].table);
 
-            if (!state.prohibited.length || !state.allowed.length) {
+            if (!state.prohibited.length || !state.allowed.length || !hasAllLanguageKeys(state.language)) {
                 throw new Error('Sheet loaded but expected columns/tabs were not found.');
             }
         });
@@ -139,6 +166,7 @@
                 key: a.profile
             };
         });
+        state.language = snap.language || {};
     }
 
     // ---------- Persistence ----------
@@ -412,15 +440,17 @@
             return '';
         }
 
+        var language = state.language || {};
+
         var lines = [];
-        lines.push('AI Use Policy for This Course');
+        lines.push(language.title || 'AI Use Policy for This Course');
         lines.push('');
-        lines.push('Many students are looking for ways to enhance their learning with GenAI tools. At the same time, many uses of GenAI can undermine students’ learning and instructors’ ability to assess students’ learning and give feedback for growth. In this course, the following guidelines are meant to clarify what uses are detrimental to student learning and which may be supportive.');
+        lines.push(language.intro || '');
 
         if (prohibitedKeys.length) {
             lines.push('');
             lines.push('PROHIBITED USES OF GENERATIVE AI');
-            lines.push('Based on the learning outcomes, assessments and learning activities of this course, the following uses of generative AI are not permitted unless otherwise specified on an assignment:');
+            lines.push(language.prohibit || '');
             prohibitedKeys.forEach(function (key) {
                 lines.push('● ' + state.selectedProhibited[key]);
             });
@@ -429,7 +459,7 @@
         if (allowedKeys.length) {
             lines.push('');
             lines.push('PERMITTED USES OF GENERATIVE AI (WITH GUARDRAILS)');
-            lines.push('The following uses of generative AI are permitted in this course. Given that GenAI tools can often hallucinate or produce incorrect information, students are responsible for double-checking all AI output.');
+            lines.push(language.permit || '');
             allowedKeys.forEach(function (key) {
                 var a = state.selectedAllowed[key];
                 lines.push('● ' + a.profile + ': ' + a.supports + ' ' + a.guardrail);
@@ -437,7 +467,7 @@
         }
 
         lines.push('');
-        lines.push('Students should reach out to the course instructor(s) if they have questions about this policy. If a GenAI use case not listed here may be supportive for your learning, check with the instructor first.');
+        lines.push(language.conclusion || '');
 
         return lines.join('\n').trim() + '\n';
     }

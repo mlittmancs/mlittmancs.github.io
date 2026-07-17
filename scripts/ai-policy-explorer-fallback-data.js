@@ -1,4 +1,4 @@
-// Snapshot captured 2026-07-17 from the source spreadsheet, used only if the live Google Sheet cannot be reached.
+// Snapshot captured 2026-07-21 from the source spreadsheet, used only if the live Google Sheet cannot be reached.
 window.AI_POLICY_FALLBACK_SNAPSHOT = {
   "prohibited": [
     "Students are expected not to use GenAI tools for any work in this course, apart from those tools that are so embedded in the applications or systems they use (such as spellcheck or Google search) that cannot be avoided. Optional embedded AI Assistants should not be used for course learning activities and assignments (e.g., revising documents, summarizing readings or conducting literature searches).",
@@ -138,7 +138,7 @@ window.AI_POLICY_FALLBACK_SNAPSHOT = {
   ],
   "language": {
     "title": "AI Use Policy for This Course",
-    "intro": "Many students are looking for ways to enhance their learning with GenAI tools. At the same time, many uses of GenAI can undermine students’ learning and instructors’ ability to assess students’ learning and give feedback for growth. In this course, the following guidelines are meant to clarify what uses are detrimental to student learning and which may be supportive.",
+    "intro": "Many students are looking for ways to enhance, supplement, or speed up their learning with GenAI tools. However, many uses of GenAI can undermine students’ learning and instructors’ ability to assess students’ learning and give feedback for growth. In this course, the following guidelines are meant to clarify what uses are detrimental to student learning and which may be supportive.",
     "prohibit": "Based on the learning outcomes, assessments and learning activities of this course, the following uses of generative AI are not permitted unless otherwise specified on an assignment:",
     "permit": "The following uses of generative AI are permitted in this course. Given that GenAI tools can often hallucinate or produce incorrect information, students are responsible for double-checking all AI output.",
     "conclusion": "Students should reach out to the course instructor(s) if they have questions about this policy. If a GenAI use case not listed here may be supportive for your learning, check with the instructor first."

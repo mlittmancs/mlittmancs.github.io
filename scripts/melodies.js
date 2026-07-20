@@ -167,15 +167,14 @@
     ]},
     { id: 'deck_the_halls', title: 'Deck the Halls', meter: '4/4', measures: [
       [{ s: 4, d: 'q' }, { s: 3, d: 'q' }, { s: 2, d: 'q' }, { s: 1, d: 'q' }],
-      [{ s: 0, d: 'h' }, { s: 1, d: 'h' }],
-      [{ s: 2, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }],
-      [{ s: 4, d: 'w' }],
+      [{ s: 0, d: 'q' }, { s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 0, d: 'q' }],
+      [{ s: 1, d: 'q' }, { s: 2, d: 'q' }, { s: 3, d: 'q' }, { s: 1, d: 'q' }],
+      [{ s: 2, d: 'q' }, { s: 1, d: 'q' }, { s: 0, d: 'q' }, { s: -1, d: 'q' }],
     ]},
     { id: 'we_wish_you', title: 'We Wish You a Merry Christmas', meter: '3/4', measures: [
       [{ s: 4, d: 'q' }, { s: 7, d: 'q' }, { s: 7, d: 'q' }],
-      [{ s: 7, d: 'q' }, { s: 6, d: 'q' }, { s: 5, d: 'q' }],
-      [{ s: 4, d: 'q' }, { s: 4, d: 'q' }, { s: 7, d: 'q' }],
-      [{ s: 5, d: 'h' }, { s: 4, d: 'q' }],
+      [{ s: 8, d: 'q' }, { s: 7, d: 'q' }, { s: 6, d: 'q' }],
+      [{ s: 5, d: 'h.' }],
     ]},
     { id: 'joy_to_world', title: 'Joy to the World', meter: '4/4', measures: [
       [{ s: 7, d: 'q' }, { s: 6, d: 'q' }, { s: 5, d: '8' }, { s: 4, d: 'q.' }],

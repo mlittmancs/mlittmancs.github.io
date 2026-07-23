@@ -307,17 +307,3 @@ h1 {
 .secondary-btn:hover {
     background-color: #d8dbe0;
 }
-
-.back-link {
-    text-align: center;
-    padding: 15px 0 5px;
-}
-
-.back-link a {
-    color: var(--brown-red);
-    text-decoration: none;
-}
-
-.back-link a:hover {
-    text-decoration: underline;
-}

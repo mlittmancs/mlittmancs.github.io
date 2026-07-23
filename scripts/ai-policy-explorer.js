@@ -2,7 +2,6 @@
     'use strict';
 
     var SHEET_ID = '1SjI6gLqJGou1bHjTPHzLq3VDc7P6N6wxa3fj2b7tfVU';
-    var SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/edit?gid=848342384#gid=848342384';
 
     var TAB_PROHIBITED = 'Consolidated Prohibited Uses';
     var TAB_ALLOWED = 'Allowed Uses to Support Learning';
@@ -218,7 +217,6 @@
     function cacheElements() {
         el.statusBanner = document.getElementById('status-banner');
         el.app = document.getElementById('app');
-        el.sheetLink = document.getElementById('sheet-link');
         el.prohibitedList = document.getElementById('prohibited-list');
         el.allowedList = document.getElementById('allowed-list');
         el.selectedProhibited = document.getElementById('selected-prohibited');
@@ -527,7 +525,6 @@
     function attachStaticHandlers() {
         el.copyBtn.addEventListener('click', handleCopy);
         el.clearBtn.addEventListener('click', handleClearAll);
-        el.sheetLink.href = SHEET_EDIT_URL;
     }
 
     function init() {
